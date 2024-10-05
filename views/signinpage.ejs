@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+      * {
+        font-family: 'Noto Sans', sans-serif;
+        font-size: small;
+        font-optical-sizing: auto;
+        font-weight: weight;
+        font-style: normal;
+        font-variation-settings: 'wdth' 100;
+      }
+      .button-link {
+        background: none; /* Menghilangkan background button */
+        border: none; /* Menghilangkan border button */
+        padding: 0; /* Menghilangkan padding button */
+        font-family: inherit; /* Menggunakan font yang sama dengan teks sekitar */
+        font-size: inherit; /* Menggunakan ukuran font yang sama dengan teks sekitar */
+        color: blue; /* Memberi warna biru seperti link biasa */
+        text-decoration: underline; /* Memberi garis bawah seperti link biasa */
+        cursor: pointer; /* Mengubah kursor menjadi tangan saat diarahkan ke button */
+      }
+
+      /* Menghilangkan garis bawah dan mengubah warna saat dihover */
+      .button-link:hover {
+        text-decoration: none;
+        color: darkblue;
+      }
+
+      /* Menghilangkan outline saat button di klik */
+      .button-link:focus {
+        outline: none;
+      }
+    </style>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+
+    <title>signin & signup page</title>
+  </head>
+  <body class="bg-light">
+    <div class="container d-flex flex-column justify-content-center mt-3 mb-5" id="content">
+      <div id="signinForm" style="max-width: 300px">
+        <h2>signin</h2>
+        <div class="form-group">
+          <label for="emaillog">Email:</label>
+          <input type="email" id="emaillog" name="emaillog" class="form-control rounded-pill border-success mt-2" />
+        </div>
+        <div class="form-group">
+          <label for="passwordlog">Password</label>
+          <input type="password" id="passwordlog" name="passwordlog" class="form-control rounded-pill border-success mt-2" />
+        </div>
+        <button onclick="login()" class="btn btn-success mt-2 d-flex">
+          <span id="load">signin </span>
+          <span id="ld" style="display: none">loading</span>
+          <span id="loading" style="display: none" class="spinner-border text-secondary ps-2" role="status" style="width: 15px; height: 15px"></span>
+        </button>
+      </div>
+      <p class="small">Belum punya akun daftar <button class="button-link" onclick="hideshow1('content')">disini</button></p>
+    </div>
+    <div class="container d-flex flex-column justify-content-center mt-3 mb-5 d-none" id="content2">
+      <form id="signupForm" style="max-width: 300px">
+        <h2>signup</h2>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" class="form-control rounded-pill border-success mt-2" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" class="form-control rounded-pill border-success mt-2" />
+        </div>
+        <div class="form-group">
+          <label for="display-name">Display Name</label>
+          <input type="text" id="displayName" name="displayName" class="form-control rounded-pill border-success mt-2" />
+        </div>
+        <button class="btn btn-success mt-2" onclick="register()">signup</button>
+      </form>
+      <p class="small">Sudah punya akun signin <button class="button-link" onclick="hideshow1('content2')">disini</button></p>
+    </div>
+    <div id="dat"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0. 2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script>
+      localStorage.setItem('dtf', 'data default');
+      // Get the elements
+      const content = document.getElementById('content');
+      const content2 = document.getElementById('content2');
+
+      function hideshow1(val) {
+        if (val === 'content') {
+          content.classList.add('d-none');
+          content.classList.remove('d-block');
+          content2.classList.remove('d-none');
+          content2.classList.add('d-block');
+        } else {
+          content2.classList.add('d-none');
+          content2.classList.remove('d-block');
+          content.classList.remove('d-none');
+          content.classList.add('d-block');
+        }
+      }
+      let dt;
+      function login() {
+        const email = document.getElementById('emaillog');
+        const password = document.getElementById('passwordlog');
+
+        if (email.value === '' || password.value === '') {
+          alert('Please fill in all fields');
+        } else {
+          // Kirim data ke server menggunakan AJAX atau Fetch API
+          // Contoh menggunakan Fetch
+          // Tampilkan loading
+          document.getElementById('load').style.display = 'none';
+          document.getElementById('ld').style.display = 'block';
+          document.getElementById('loading').style.display = 'block';
+
+          fetch('/signin', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: email.value,
+              password: password.value,
+            }),
+          })
+            .then(async (response) => {
+              if (response.ok) {
+                const res = await response.json();
+
+                console.log('token2', res);
+                dt += res;
+
+                if (res.token) {
+                  // Simpan token di cookie
+                  document.cookie = `token=${res.token}; expires=${new Date(Date.now() + 3600000).toUTCString()}; path=/`;
+                  // Redirect ke halaman dashboard
+                  window.location.href = '/dashboard';
+                } else {
+                  window.location.href = '/';
+                }
+              } else {
+                console.error('Error:', response.status);
+              }
+            })
+            .catch((error) => console.error(error))
+            .finally(() => {
+              // Sembunyikan loading, apa pun hasil request-nya
+              document.getElementById('load').style.display = 'block';
+              document.getElementById('ld').style.display = 'none';
+              document.getElementById('loading').style.display = 'none';
+            });
+        }
+      }
+
+      function register() {
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const displayName = document.getElementById('displayName');
+
+        if (email.value === '' || password.value === '' || displayName.value === '') {
+          alert('Please fill in all fields');
+          return false;
+        }
+
+        // Kirim data ke server menggunakan AJAX atau Fetch API
+        // Contoh menggunakan Fetch API
+        fetch('/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email.value,
+            password: password.value,
+            displayName: displayName.value,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => console.log(data))
+          .catch((error) => console.error(error));
+      }
+    </script>
+  </body>
+</html>
