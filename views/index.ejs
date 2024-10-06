@@ -206,8 +206,8 @@ Stok Terbatas! Pesan Sekarang Sebelum Kehabisan!
         // let urlGambarTerkode = urlGambar;
         let urlGambarTerkode = encodeURIComponent(urlGambar);
 
-        // let url = `https://wa.me/6283166383802?text=${pesanTerkode}%0A%0A${urlGambarTerkode}`;
-        let url = `https://api.whatsapp.com/send?phone=6283166383802&text=${pesanTerkode}&media=${urlGambarTerkode}`;
+        let url = `https://wa.me/6283166383802?text=${pesanTerkode}%0A%0A${urlGambarTerkode}`;
+        // let url = `https://api.whatsapp.com/send?phone=6283166383802&text=${pesanTerkode}&media=${urlGambarTerkode}`;
 
         // Buka WhatsApp di tab/jendela baru
         window.open(url, '_blank');
@@ -248,7 +248,7 @@ Stok Terbatas! Pesan Sekarang Sebelum Kehabisan!
                   <p class="card-text text-secondary fs-6 m-0"><i class="bi bi-geo-alt"></i> ${product.gudang}</p>
                   <div class="d-flex justify-content-between">
                     <a href="${product.detailUrl}" class="btn btn-sm btn-success m-0 ps-3 pe-3">Buy Now</a>
-                    <button class="btn btn-sm btn-success m-0 ps-3 pe-3"><i class="bi bi-whatsapp"></i></button>
+                    <button onClick="kirimPesanWhatsApp('${product.name}','${product.price}','${product.subPrice}', '${product.discount}', '${product.imageUrl}','${product.detailUrl}')" class="btn btn-sm btn-success m-0 ps-3 pe-3"><i class="bi bi-whatsapp"></i></button>
                   </div>
                 </div>
               </div>
@@ -277,7 +277,7 @@ Stok Terbatas! Pesan Sekarang Sebelum Kehabisan!
                   <p class="card-text text-secondary fs-6 m-0"><i class="bi bi-geo-alt"></i> ${product.gudang}</p>
                   <div class="d-flex justify-content-between">
                     <a href="${product.detailUrl}" class="btn btn-sm btn-success m-0 ps-3 pe-3">Buy Now</a>
-                    <button class="btn btn-sm btn-success m-0 ps-3 pe-3"><i class="bi bi-whatsapp"></i></button>
+                    <button onClick="kirimPesanWhatsApp('${product.name}','${product.price}','${product.subPrice}','${product.discount}','${product.imageUrl}','${product.detailUrl}')" class="btn btn-sm btn-success m-0 ps-3 pe-3"><i class="bi bi-whatsapp"></i></button>
                   </div>
                 </div>
               </div>
