@@ -114,7 +114,7 @@ router.post('/products', authorize, upload.single('image'), async function (req,
       name,
       price,
       subPrice,
-      categoryName,
+      category: categoryName,
       detailUrl,
       imageUrl,
       discount,
@@ -128,6 +128,151 @@ router.post('/products', authorize, upload.single('image'), async function (req,
     console.error(error);
     res.status(500).send('Terjadi kesalahan.');
   }
+});
+
+router.get('/dashboard', authorize, async (req, res) => {
+  const productsDbRef = ref(db, 'products');
+  const categoriesDbRef = ref(db, 'categories');
+
+  const productsSnapshot = await get(productsDbRef);
+  const categoriesSnapshot = await get(categoriesDbRef);
+
+  if (productsSnapshot.exists() && categoriesSnapshot.exists()) {
+    const products = Object.keys(productsSnapshot.val()).map((key) => {
+      return { id: key, ...productsSnapshot.val()[key] };
+    });
+
+    const categories = Object.keys(categoriesSnapshot.val()).map((key) => {
+      return { id: key, ...categoriesSnapshot.val()[key] };
+    });
+    res.render('dashboard', {
+      products: products,
+      categories: categories,
+    });
+  } else {
+    res.status(404).json({ message: 'No products or categories found' });
+  }
+});
+//HALAMAN ADD PRODUCT
+router.get('/addproducts', authorize, (req, res) => {
+  res.render('addProduct');
+});
+
+//API EDIT PRODUCT
+router.post('/products/e/:id', authorize, upload.single('image'), async function (req, res) {
+  try {
+    const { id } = req.params;
+    const { name, price, subPrice, category, detailUrl, rating, terjual, gudang } = req.body;
+    const file = req.file;
+
+    // Cek produk jika belum ada (menggunakan Realtime Database)
+    const productRef = ref(db, `products/${id}`);
+    const productSnapshot = await get(productRef);
+    if (!productSnapshot.exists()) {
+      return res.status(404).send('Produk tidak ditemukan.');
+    }
+    // Hitung diskon
+    const discount = Math.round(((price - subPrice) / price) * 100);
+
+    // Cek dan update kategori jika belum ada (menggunakan Realtime Database)
+    const categoryRef = ref(db, 'categories');
+    const categorySnapshot = await get(categoryRef);
+
+    const categoryName = category.toLowerCase(); // replace with the actual category name
+
+    const categories = Object.values(categorySnapshot.val()); // convert object to array
+    const existingCategory = categories.find((category) => category.name.toLowerCase() === categoryName);
+
+    if (!existingCategory) {
+      await push(categoryRef, { name: categoryName });
+    }
+
+    // Upload gambar ke Firebase Storage (jika ada)
+    let imageUrl = '';
+    if (file) {
+      const imageRef = dbsRef(storage, `images/${uuidv4()}-${file.originalname}`);
+      await uploadBytes(imageRef, file.buffer);
+      imageUrl = await getDownloadURL(imageRef);
+    } else {
+      imageUrl = productSnapshot.val().imageUrl;
+    }
+
+    // Update produk ke Realtime Database
+    await update(ref(db, `products/${id}`), {
+      name,
+      price,
+      subPrice,
+      category: categoryName,
+      detailUrl,
+      imageUrl,
+      discount,
+      rating,
+      terjual,
+      gudang,
+    });
+
+    res.status(200).json('success update product sablonika ');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Terjadi kesalahan.');
+  }
+});
+//HALAMAN EDIT PRODUCT
+router.get('/products/edit/:id', authorize, async function (req, res) {
+  try {
+    const id = req.params.id;
+
+    const productRef = ref(db, `products/${id}`);
+    const productSnapshot = await get(productRef);
+    if (!productSnapshot.exists()) {
+      res.status(404).send('Produk tidak ditemukan.');
+    } else {
+      const product = productSnapshot.val();
+      product.id = productSnapshot.key;
+      res.render('editProduct', {
+        product: product,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Terjadi kesalahan.');
+  }
+});
+
+// DELETE
+
+router.delete('/products/:id/delete', authorize, async function (req, res) {
+  try {
+    const id = req.params.id;
+    const productRef = ref(db, `products/${id}`);
+
+    // Retrieve the product data from the Realtime Database
+    const productSnapshot = await get(productRef);
+    if (!productSnapshot.exists()) {
+      return res.status(404).send('Product not found');
+    }
+    const productData = productSnapshot.val();
+    // Delete image from Storage
+    if (productData.imageUrl) {
+      const oldImageRef = dbsRef(storage, productData.imageUrl);
+      await deleteObject(oldImageRef);
+    }
+
+    // Delete product data from Realtime Database
+    await remove(productRef);
+
+    res.status(200).json({
+      message: 'Produk berhasil dihapus',
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Terjadi kesalahan.');
+  }
+});
+
+// HALAMAN NOT FOUND 404
+router.use((req, res) => {
+  res.status(404).send('Halaman Not Found 404 !');
 });
 
 module.exports = router;

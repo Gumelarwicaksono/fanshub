@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+      * {
+        font-family: 'Noto Sans', sans-serif;
+        font-size: 11.5px;
+        font-optical-sizing: auto;
+        font-weight: weight;
+        font-style: normal;
+        font-variation-settings: 'wdth' 100;
+      }
+    </style>
+
+    <!-- Bootstrap CSS -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.7/css/dataTables.dataTables.css" />
+
+    <title>products</title>
+  </head>
+  <body class="bg-light">
+    <!-- Navigation-->
+    <div class="container p-5 overflow-scroll">
+      <h1>Data Products Fanshub</h1>
+      <a href="/addproducts" class="btn btn-primary small">Add Products +</a>
+      <table id="example" class="display small" style="width: 100%">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>SubPrice</th>
+            <th>Detaile</th>
+            <th>Discount</th>
+            <th>Rating</th>
+            <th>terjual</th>
+            <th>Gudang</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <% let counter = 1; %>
+        <tbody>
+          <% products.forEach(function(item){ %>
+          <tr>
+            <td><%= counter %></td>
+            <td><img src="<%= item.imageUrl %>" style="width: 30px; height: 30px" alt="" /></td>
+            <td><%= item.name %></td>
+            <td><%= item.price %></td>
+            <td><%= item.subPrice %></td>
+            <td><%= item.detailUrl %></td>
+            <td><%= item.discount %></td>
+            <td><%= item.rating %></td>
+            <td><%= item.terjual %></td>
+            <td><%= item.gudang %></td>
+            <td class="d-flex">
+              <a class="btn btn-warning me-1" href="/products/edit/<%= item.id %>"><i class="bi bi-pencil-fill text-primary"></i></a>
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-trash3-fill text-danger"></i></button>
+              <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-danger" id="status-delete"></div>
+                    <div class="modal-body">apakah anda yakin akan menghapus peoduct <%= item.name %></div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" onclick="hapusProduk('<%= item.id %>')" class="btn btn-primary">delete</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <% counter++; %> <%}); %>
+        </tbody>
+      </table>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.datatables.net/2.1.7/js/dataTables.js"></script>
+    <script>
+      $(document).ready(function () {
+        $('#example').DataTable();
+      });
+      function hapusProduk(productId) {
+        const del = document.getElementById('status-delete');
+        // Kirim request DELETE ke server
+        fetch(`/products/${productId}/delete`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json', // Tambahkan header jika diperlukan
+          },
+          // Tidak perlu body untuk request DELETE
+        })
+          .then((response) => {
+            // Periksa apakah responsnya sukses (status code 2xx)
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            // Redirect atau tampilkan pesan sukses
+            return response.json(); // Jika server mengembalikan JSON
+          })
+          .then((data) => {
+            // Tangani respons dari server (jika ada)
+            console.log('Produk berhasil dihapus:', data.message);
+            // Redirect ke halaman lain, misalnya
+            del.innerText = data.message;
+          })
+          .catch((error) => {
+            // Tangani error jika ada masalah dengan request
+            console.error('Terjadi kesalahan saat menghapus produk:', error);
+            // Tampilkan pesan error kepada pengguna
+          });
+      }
+    </script>
+  </body>
+</html>
