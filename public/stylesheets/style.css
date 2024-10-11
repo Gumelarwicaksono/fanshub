@@ -1,8 +1,156 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+  font-family: 'Noto Sans', sans-serif;
+  font-size: small;
+  font-optical-sizing: auto;
+  font-weight: weight;
+  font-style: normal;
+  font-variation-settings: 'wdth' 100;
+}
+main {
+  min-height: 70vh !important;
+}
+.btn-success {
+  background-color: #4caf50 !important;
+}
+.text-success {
+  color: #4caf50 !important;
+}
+.border-success {
+  border-color: #4caf50 !important;
+}
+.rounded-custom {
+  border-radius: 10px;
+}
+.rounded-cs-50 {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+}
+.img-size-logo {
+  width: 30px;
+  height: 30px;
+}
+.h-min {
+  min-height: 322px !important;
+}
+footer {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+.card-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.active-btn {
+  background-color: #69db6d !important;
+  color: white !important;
 }
 
-a {
-  color: #00B7FF;
+/* ======= BANER STYLE============== */
+
+.dsc-prod {
+  font-size: 4.7rem;
+  left: 49%;
+  bottom: 43%;
+  color: black !important;
+}
+.nm-prod {
+  font-size: 1.5rem !important;
+  bottom: 51%;
+  left: 9%;
+  padding: 6px;
+  color: #011802 !important;
+  font-weight: bold;
+}
+.img-prod {
+  right: 4rem;
+  width: 300px;
+  top: 0;
+}
+
+.tx-tautan {
+  bottom: 12%;
+  left: 46%;
+}
+/* Tampilan Tablet (Lebar layar antara 768px dan 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .dsc-prod {
+    font-size: 4.7rem;
+    left: 49%;
+    bottom: 40%;
+  }
+  .nm-prod {
+    font-size: 1.2rem !important;
+    bottom: 53%;
+    left: 9%;
+  }
+  .img-prod {
+    right: 3rem;
+    width: 200px;
+    top: 0;
+  }
+
+  .tx-tautan {
+    bottom: 12%;
+    left: 46%;
+  }
+}
+/* Tampilan mobile 1 (Lebar layar antara 768px dan 991px) */
+@media (min-width: 428px) and (max-width: 768px) {
+  .dsc-prod {
+    font-size: 2.1rem;
+    left: 49%;
+    bottom: 43%;
+    color: black !important;
+  }
+  .nm-prod {
+    font-size: 1.1rem !important;
+    bottom: 51% !important;
+    left: 7% !important;
+  }
+  .img-prod {
+    right: 3rem !important;
+    width: 110px !important;
+    top: 10%;
+  }
+
+  .tx-tautan {
+    font-size: 0.5rem;
+    bottom: 18% !important;
+    left: 46%;
+  }
+}
+/* Tampilan mobile 2 (Lebar layar antara 768px dan 991px) */
+@media (min-width: 360px) and (max-width: 428px) {
+  .dsc-prod {
+    font-size: 2.1rem;
+    left: 49%;
+    bottom: 43%;
+  }
+  .nm-prod {
+    font-size: 0.7rem !important;
+    bottom: 52%;
+    left: 7% !important;
+  }
+  .delete {
+    font-size: 0.5rem;
+  }
+  .img-prod {
+    right: 1.5rem;
+    width: 100px;
+    top: 0;
+  }
+
+  .tx-tautan {
+    font-size: 0.5rem;
+    bottom: 20%;
+    left: 46%;
+  }
 }

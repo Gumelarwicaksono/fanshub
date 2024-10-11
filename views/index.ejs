@@ -4,62 +4,8 @@
     <!-- Required meta tags -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
-      * {
-        font-family: 'Noto Sans', sans-serif;
-        font-size: small;
-        font-optical-sizing: auto;
-        font-weight: weight;
-        font-style: normal;
-        font-variation-settings: 'wdth' 100;
-      }
-      main {
-        min-height: 70vh !important;
-      }
-      .btn-success {
-        background-color: #4caf50 !important;
-      }
-      .text-success {
-        color: #4caf50 !important;
-      }
-      .border-success {
-        border-color: #4caf50 !important;
-      }
-      .rounded-custom {
-        border-radius: 25px;
-      }
-      .rounded-cs-50 {
-        width: 10px !important;
-        height: 10px !important;
-        border-radius: 50% !important;
-      }
-      .img-size-logo {
-        width: 30px;
-        height: 30px;
-      }
-      .h-min {
-        min-height: 322px !important;
-      }
-      footer {
-        position: relative;
-        bottom: 0;
-        width: 100%;
-        text-align: center;
-      }
-      .card-title {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .active-btn {
-        background-color: #69db6d !important;
-        color: white !important;
-      }
-    </style>
+    <link rel="stylesheet" href="./stylesheets/style.css" />
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
@@ -77,21 +23,30 @@
       <div class="container mt-3">
         <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
           <div class="carousel-indicators d-flex justify-content-start ms-5 mb-1">
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active rounded-cs-50" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" class="rounded-cs-50" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" class="rounded-cs-50" aria-label="Slide 3"></button>
+            <% baners.forEach((item, index) => { %>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="<%= index %>" class="rounded-cs-50 <%= index === 0 ? 'active' : '' %>"></button>
+            <% }); %>
           </div>
           <div class="carousel-inner rounded-custom">
-            <div class="carousel-item active">
-              <!-- <img src="https://drive.google.com/file/d/1KHLo0-r3icqpthnU1h3K2Y8W9NZ6sfEw/view?usp=sharing" class="d-block w-100" alt="..." /> -->
-              <img src="./images/baner.jpg" class="d-block w-100 rounded-custom" alt="..." />
+            <% baners.forEach((item, index) => { %>
+            <div class="carousel-item <%= index === 0 ? 'active' : '' %> position-relative">
+              <img src="<%= item.banerImg %>" class="d-block w-100 rounded-custom" alt="..." />
+              <div class="carousel-caption d-flex flex-column align-items-center justify-content-center position-absolute top-0 bottom-0 start-0 w-100 h-100">
+                <div class="overlay d-flex justify-content-around w-100 h-100">
+                  <div class="text-white h-100">
+                    <p class="position-absolute nm-prod d-flex flex-column">Rp<%= item.banerPrice %><del class="text-secondary delete">Rp<%= item.banerSubPrice %></del></p>
+                  </div>
+                  <div class="h-100">
+                    <p class="position-absolute fw-bold dsc-prod"><%= item.banerDiscount %>%</p>
+                  </div>
+                  <img class="position-absolute img-prod" src="<%= item.banerImgUrl %>" alt="" />
+                </div>
+              </div>
+              <span class="overlay d-flex justify-content-center w-100 bottom-0 mt-5">
+                <p class="text-dark position-absolute tx-tautan">@<%= item.banerDetaileUrl %></p>
+              </span>
             </div>
-            <div class="carousel-item">
-              <img src="./images/baner.jpg" class="d-block w-100 rounded-custom" alt="..." />
-            </div>
-            <div class="carousel-item">
-              <img src="./images/baner.jpg" class="d-block w-100 rounded-custom" alt="..." />
-            </div>
+            <% }); %>
           </div>
           <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -105,6 +60,7 @@
       </div>
     </header>
     <main>
+      <div class="text-primary">ini baners : <%= baners[0].banerDetaileUrl %></div>
       <div id="myDiv" data-products="<%= JSON.stringify(products) %>"></div>
       <!-- CATEGORY BTN SECTION -->
       <section>
@@ -198,19 +154,24 @@ Tampil stylish dan percaya diri dengan product terbaru kami! Bahan katun premium
 
 Stok Terbatas! Pesan Sekarang Sebelum Kehabisan!
 
-➡️ Klik di sini untuk cek ongkir dan pesan: ${detaileUrl} 
+➡️ Klik di sini untuk cek ongkir dan pesan: ${urlGambar} 
 
 `;
         // Encode pesan dan URL gambar
         let pesanTerkode = encodeURIComponent(pesan);
         // let urlGambarTerkode = urlGambar;
-        let urlGambarTerkode = encodeURIComponent(urlGambar);
+        // let urlGambarTerkode = encodeURIComponent(urlGambar);
 
-        let url = `https://wa.me/6283166383802?text=${pesanTerkode}%0A%0A${urlGambarTerkode}`;
-        // let url = `https://api.whatsapp.com/send?phone=6283166383802&text=${pesanTerkode}&media=${urlGambarTerkode}`;
+        const whatsappUrl = `https://wa.me/?text=${pesanTerkode}`;
 
-        // Buka WhatsApp di tab/jendela baru
-        window.open(url, '_blank');
+        // Buka WhatsApp Web API di jendela baru
+        window.open(whatsappUrl, '_blank');
+
+        // let url = `https://wa.me/6283166383802?text=${pesanTerkode}%0A%0A${urlGambarTerkode}`;
+        // // let url = `https://api.whatsapp.com/send?phone=6283166383802&text=${pesanTerkode}&media=${urlGambarTerkode}`;
+
+        // // Buka WhatsApp di tab/jendela baru
+        // window.open(url, '_blank');
       }
 
       //FILTER BY CATEGORY
@@ -293,6 +254,51 @@ Stok Terbatas! Pesan Sekarang Sebelum Kehabisan!
     <!--
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    -->
+
+    <!-- 
+    
+    
+     <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-indicators d-flex justify-content-start ms-5 mb-1">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active rounded-cs-50" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" class="rounded-cs-50" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" class="rounded-cs-50" aria-label="Slide 3"></button>
+          </div>
+          <div class="carousel-inner rounded-custom">
+            <div class="carousel-item active position-relative">
+              <img src="./images/baner.jpg" class="d-block w-100 rounded-custom" alt="..." />
+              <div class="carousel-caption d-flex flex-column align-items-center justify-content-center position-absolute top-0 bottom-0 start-0 w-100 h-100">
+                <div class="overlay d-flex justify-content-around w-100 h-100">
+                  <div class="text-white h-100">
+                   <p class="position-absolute " style="bottom: 45% ; font-size: 0.5em ; margin-left: -3em">Nama products</p> 
+                    <p class="position-absolute nm-prod d-flex- flex-column">Rp50.000 <del class="text-secondary delete">95.000</del></p>
+                  </div>
+                  <div class="h-100">
+                    <p class="position-absolute fw-bold " style="bottom: 37.5%; padding-left: 0.2em">20%</p> 
+                    <p class="position-absolute fw-bold dsc-prod">20%</p>
+                     <p class="position-absolute fw-bold fs-3" style="bottom: 27%; padding-left: 0.9em">20%</p>
+                  </div>
+                  <img class="position-absolute img-prod" src="./images/prod1.png" alt="" />
+                </div>
+              </div>
+
+              <span class="overlay d-flex justify-content-center w-100 bottom-0 mt-5">
+                <p class="text-dark position-absolute tx-tautan">@facebook</p>
+              </span>
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+    
+    
     -->
   </body>
 </html>

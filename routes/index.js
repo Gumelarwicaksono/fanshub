@@ -16,9 +16,11 @@ function register0(email, password, displayName) {}
 router.get('/', async (req, res) => {
   const productsDbRef = ref(db, 'products');
   const categoriesDbRef = ref(db, 'categories');
+  const banersDbRef = ref(db, 'baners');
 
   const productsSnapshot = await get(productsDbRef);
   const categoriesSnapshot = await get(categoriesDbRef);
+  const banersSnapshot = await get(banersDbRef);
 
   if (productsSnapshot.exists() && categoriesSnapshot.exists()) {
     const products = [];
@@ -35,9 +37,17 @@ router.get('/', async (req, res) => {
       categories.push(category);
     });
 
+    const baners = [];
+    banersSnapshot.forEach((childSnapshot) => {
+      const baner = childSnapshot.val();
+      baner.id = childSnapshot.key;
+      baners.push(baner);
+    });
+
     res.render('index', {
       products: products,
       categories: categories,
+      baners: baners,
     });
   } else {
     res.status(404).json({ message: 'No products or categories found' });
@@ -101,13 +111,27 @@ router.post('/products', authorize, upload.single('image'), async function (req,
       await push(categoryRef, { name: categoryName });
     }
     // Upload gambar ke Firebase Storage (jika ada)
+    // let imageUrl = '';
+    // if (file) {
+    //   const imageRef = dbsRef(storage, `images/${uuidv4()}-${file.originalname}`);
+    //   await uploadBytes(imageRef, file.buffer);
+    //   imageUrl = await getDownloadURL(imageRef);
+    // }
+
     let imageUrl = '';
     if (file) {
       const imageRef = dbsRef(storage, `images/${uuidv4()}-${file.originalname}`);
-      await uploadBytes(imageRef, file.buffer);
+      const metadata = {
+        contentType: file.mimetype, // e.g. image/jpeg, image/png, etc.
+        customMetadata: {
+          description: 'This is a products image',
+        },
+        contentDisposition: 'inline; filename="' + file.originalname + '"',
+        cacheControl: 'public, max-age=31536000', // cache for 1 year
+      };
+      await uploadBytes(imageRef, file.buffer, metadata);
       imageUrl = await getDownloadURL(imageRef);
     }
-
     // Simpan produk ke Realtime Database
     const newProductRef = push(ref(db, 'products'));
     await set(newProductRef, {
@@ -133,9 +157,11 @@ router.post('/products', authorize, upload.single('image'), async function (req,
 router.get('/dashboard', authorize, async (req, res) => {
   const productsDbRef = ref(db, 'products');
   const categoriesDbRef = ref(db, 'categories');
+  const banersDbRef = ref(db, 'baners');
 
   const productsSnapshot = await get(productsDbRef);
   const categoriesSnapshot = await get(categoriesDbRef);
+  const banersSnapshot = await get(banersDbRef);
 
   if (productsSnapshot.exists() && categoriesSnapshot.exists()) {
     const products = Object.keys(productsSnapshot.val()).map((key) => {
@@ -145,9 +171,13 @@ router.get('/dashboard', authorize, async (req, res) => {
     const categories = Object.keys(categoriesSnapshot.val()).map((key) => {
       return { id: key, ...categoriesSnapshot.val()[key] };
     });
+    const baners = Object.keys(banersSnapshot.val()).map((key) => {
+      return { id: key, ...banersSnapshot.val()[key] };
+    });
     res.render('dashboard', {
       products: products,
       categories: categories,
+      baners: baners,
     });
   } else {
     res.status(404).json({ message: 'No products or categories found' });
@@ -241,10 +271,40 @@ router.get('/products/edit/:id', authorize, async function (req, res) {
 
 // DELETE
 
-router.delete('/products/:id/delete', authorize, async function (req, res) {
+// router.delete('/products/:id/delete', authorize, async function (req, res) {
+//   try {
+//     const id = req.params.id;
+//     const productRef = ref(db, `products/${id}`);
+//     const categoryRef = ref(db, 'category');
+
+//     // Retrieve the product data from the Realtime Database
+//     const productSnapshot = await get(productRef);
+//     if (!productSnapshot.exists()) {
+//       return res.status(404).send('Product not found');
+//     }
+//     const productData = productSnapshot.val();
+//     // Delete image from Storage
+//     if (productData.imageUrl) {
+//       const oldImageRef = dbsRef(storage, productData.imageUrl);
+//       await deleteObject(oldImageRef);
+//     }
+
+//     // Delete product data from Realtime Database
+//     await remove(productRef);
+
+//     res.status(200).json({
+//       message: 'Produk berhasil dihapus',
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('Terjadi kesalahan.');
+//   }
+// });
+router.delete('/products/:id/delete', authorize, async (req, res) => {
   try {
     const id = req.params.id;
     const productRef = ref(db, `products/${id}`);
+    const categoryRef = ref(db, 'categories');
 
     // Retrieve the product data from the Realtime Database
     const productSnapshot = await get(productRef);
@@ -261,6 +321,26 @@ router.delete('/products/:id/delete', authorize, async function (req, res) {
     // Delete product data from Realtime Database
     await remove(productRef);
 
+    // Check if any category is not used by any product
+    const categoriesSnapshot = await get(categoryRef);
+    const categoriesData = categoriesSnapshot.val();
+    const productsSnapshot = await get(ref(db, 'products'));
+    const productsData = productsSnapshot.val();
+
+    Object.keys(categoriesData).forEach((categoryId) => {
+      let categoryName = categoriesData[categoryId].name;
+      let categoryUsed = false;
+      Object.keys(productsData).forEach((productId) => {
+        if (productsData[productId].category === categoryName) {
+          categoryUsed = true;
+        }
+      });
+      if (!categoryUsed) {
+        // Delete the unused category
+        remove(ref(db, `category/${categoryId}`));
+      }
+    });
+
     res.status(200).json({
       message: 'Produk berhasil dihapus',
     });
@@ -269,10 +349,4 @@ router.delete('/products/:id/delete', authorize, async function (req, res) {
     res.status(500).send('Terjadi kesalahan.');
   }
 });
-
-// HALAMAN NOT FOUND 404
-router.use((req, res) => {
-  res.status(404).send('Halaman Not Found 404 !');
-});
-
 module.exports = router;
