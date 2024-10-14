@@ -78,6 +78,7 @@
         </div>
       </section>
       <!-- PRODUCTS ALL & FILTER -->
+      <% function angkaFormat(angka) { return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); } %>
       <section>
         <div class="container mt-4 mb-4">
           <h3 class="fw-bold">Tunjukkin Hobimu Lewat Baju Mu yuk!</h3>
@@ -93,8 +94,8 @@
                   <div class="card-text m-0">
                     <div class="d-flex justify-content-between m-0 p-0">
                       <div class="m-0">
-                        <del class="m-0"><%= product.price %></del>
-                        <div class="text-success m-0 fw-bold"><%= product.subPrice %></div>
+                        <del class="m-0">Rp<%=angkaFormat(product.price)%></del>
+                        <div class="text-success m-0 fw-bold">Rp<%= angkaFormat(product.subPrice) %></div>
                       </div>
                       <div class="m-0">
                         <div class="bg-danger text-white divs-1 pe-1"><%= product.discount %>% Off</div>
@@ -105,12 +106,17 @@
                   <p class="card-text text-secondary fs-6 m-0"><i class="bi bi-geo-alt"></i><%= product.gudang %></p>
                   <div class="d-flex justify-content-between">
                     <a href="<%= product.detailUrl %>" class="btn btn-sm btn-success m-0 ps-3 pe-3">Buy Now</a>
-                    <button
-                      onclick="kirimPesanWhatsApp('<%= product.name %>','<%= product.price%>','<%= product.subPrice %>','<%= product.discount %>','<%= product.imageUrl %>','<%= product.detaileUrl %>')"
-                      class="btn btn-sm btn-success m-0 ps-3 pe-3"
-                    >
-                      <i class="bi bi-whatsapp"></i>
-                    </button>
+                    <form action="/share-whatsapp" method="post">
+                      <input type="hidden" name="imageUrl" value="<%= product.imageUrl %>" />
+                      <input type="hidden" name="name" value="<%= product.name %>" />
+                      <input type="hidden" name="price" value="<%= product.price %>" />
+                      <input type="hidden" name="subPrice" value="<%=   product.subPrice %>" />
+                      <input type="hidden" name="discount" value="<%= product.discount %>" />
+                      <input type="hidden" name="detaileUrl" value="<%= product.detaileUrl %>" />
+                      <button type="submit" class="btn btn-sm btn-success m-0 ps-3 pe-3">
+                        <i class="bi bi-whatsapp"></i>
+                      </button>
+                    </form>
                   </div>
                 </div>
               </div>
@@ -126,6 +132,7 @@
     </footer>
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script>
+      //
       //GET DATA
       const products = JSON.parse(document.getElementById('myDiv').getAttribute('data-products'));
 
@@ -137,41 +144,6 @@
       //formating number
       function formatAngka(angka) {
         return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-      }
-
-      //SEND TO WHATSAP
-      function kirimPesanWhatsApp(nama, price, subPrice, discount, urlGambar, detaileUrl) {
-        let pesan = `
-🔥 PROMO TERBATAS! ${nama} 🔥
-
-✨ ${nama} ✨
-
-Harga Normal: Rp${formatAngka(price)}
-Diskon: ${discount}%
-Harga Spesial: Rp${formatAngka(subPrice)}
-
-Tampil stylish dan percaya diri dengan product terbaru kami! Bahan katun premium yang nyaman dan desain grafiti yang edgy bikin kamu jadi pusat perhatian. 
-
-Stok Terbatas! Pesan Sekarang Sebelum Kehabisan!
-
-➡️ Klik di sini untuk cek ongkir dan pesan: ${urlGambar} 
-
-`;
-        // Encode pesan dan URL gambar
-        let pesanTerkode = encodeURIComponent(pesan);
-        // let urlGambarTerkode = urlGambar;
-        // let urlGambarTerkode = encodeURIComponent(urlGambar);
-
-        const whatsappUrl = `https://wa.me/?text=${pesanTerkode}`;
-
-        // Buka WhatsApp Web API di jendela baru
-        window.open(whatsappUrl, '_blank');
-
-        // let url = `https://wa.me/6283166383802?text=${pesanTerkode}%0A%0A${urlGambarTerkode}`;
-        // // let url = `https://api.whatsapp.com/send?phone=6283166383802&text=${pesanTerkode}&media=${urlGambarTerkode}`;
-
-        // // Buka WhatsApp di tab/jendela baru
-        // window.open(url, '_blank');
       }
 
       //FILTER BY CATEGORY
@@ -197,8 +169,8 @@ Stok Terbatas! Pesan Sekarang Sebelum Kehabisan!
                   <div class="card-text m-0">
                     <div class="d-flex justify-content-between m-0 p-0">
                       <div class="m-0">
-                        <del class="m-0">${product.price}</del>
-                        <div class="text-success m-0 fw-bold">${product.subPrice}</div>
+                        <del class="m-0">Rp${formatAngka(product.price)}</del>
+                        <div class="text-success m-0 fw-bold">Rp${formatAngka(product.subPrice)}</div>
                       </div>
                       <div class="m-0">
                         <div class="bg-danger text-white divs-1 pe-1">${product.discount}% Off</div>
@@ -209,7 +181,17 @@ Stok Terbatas! Pesan Sekarang Sebelum Kehabisan!
                   <p class="card-text text-secondary fs-6 m-0"><i class="bi bi-geo-alt"></i> ${product.gudang}</p>
                   <div class="d-flex justify-content-between">
                     <a href="${product.detailUrl}" class="btn btn-sm btn-success m-0 ps-3 pe-3">Buy Now</a>
-                    <button onClick="kirimPesanWhatsApp('${product.name}','${product.price}','${product.subPrice}', '${product.discount}', '${product.imageUrl}','${product.detailUrl}')" class="btn btn-sm btn-success m-0 ps-3 pe-3"><i class="bi bi-whatsapp"></i></button>
+                   <form action="/share-whatsapp" method="post">
+                      <input type="hidden" name="imageUrl" value="${product.imageUrl}" />
+                      <input type="hidden" name="name" value="${product.name}" />
+                      <input type="hidden" name="price" value="${product.price}" />
+                      <input type="hidden" name="subPrice" value="${product.subPrice}" />
+                      <input type="hidden" name="discount" value="${product.discount}" />
+                      <input type="hidden" name="detaileUrl" value="${product.detaileUrl}" />
+                      <button type="submit" class="btn btn-sm btn-success m-0 ps-3 pe-3">
+                        <i class="bi bi-whatsapp"></i>
+                      </button>
+                    </form>
                   </div>
                 </div>
               </div>
@@ -226,8 +208,8 @@ Stok Terbatas! Pesan Sekarang Sebelum Kehabisan!
                   <div class="card-text m-0">
                     <div class="d-flex justify-content-between m-0 p-0">
                       <div class="m-0">
-                        <del class="m-0">${product.price}</del>
-                        <div class="text-success m-0 fw-bold">${product.subPrice}</div>
+                        <del class="m-0">Rp${formatAngka(product.price)}</del>
+                        <div class="text-success m-0 fw-bold">Rp${formatAngka(product.subPrice)}</div>
                       </div>
                       <div class="m-0">
                         <div class="bg-danger text-white divs-1 pe-1">${product.discount}% Off</div>
@@ -238,7 +220,17 @@ Stok Terbatas! Pesan Sekarang Sebelum Kehabisan!
                   <p class="card-text text-secondary fs-6 m-0"><i class="bi bi-geo-alt"></i> ${product.gudang}</p>
                   <div class="d-flex justify-content-between">
                     <a href="${product.detailUrl}" class="btn btn-sm btn-success m-0 ps-3 pe-3">Buy Now</a>
-                    <button onClick="kirimPesanWhatsApp('${product.name}','${product.price}','${product.subPrice}','${product.discount}','${product.imageUrl}','${product.detailUrl}')" class="btn btn-sm btn-success m-0 ps-3 pe-3"><i class="bi bi-whatsapp"></i></button>
+                    <form action="/share-whatsapp" method="post">
+                      <input type="hidden" name="imageUrl" value="${product.imageUrl}" />
+                      <input type="hidden" name="name" value="${product.name}" />
+                      <input type="hidden" name="price" value="${product.price}" />
+                      <input type="hidden" name="subPrice" value="${product.subPrice}" />
+                      <input type="hidden" name="discount" value="${product.discount}" />
+                      <input type="hidden" name="detaileUrl" value="${product.detaileUrl}" />
+                      <button type="submit" class="btn btn-sm btn-success m-0 ps-3 pe-3">
+                        <i class="bi bi-whatsapp"></i>
+                      </button>
+                    </form>
                   </div>
                 </div>
               </div>
