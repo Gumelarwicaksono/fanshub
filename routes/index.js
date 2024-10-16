@@ -450,19 +450,22 @@ router.post('/share-whatsapp', async (req, res) => {
     const recipientPhoneNumber = '+6283166383802';
 
     const caption = `
+    Silahkan di cekout kak
     🔥 PROMO TERBATAS! ${req.body.name} 🔥
 
-    ✨ ${req.body.name} ✨
-    id : ${req.body.id}
-    Harga Normal: Rp${formatAngka(req.body.price)}
-    Diskon: ${req.body.discount}%
-    Harga Spesial kaos ${req.body.name} setelah diskon: *Rp${formatAngka(req.body.subPrice)}*
-    Anda Hemat: *Rp${formatAngka(req.body.price - req.body.subPrice)}*
+  ✨ ${req.body.name} ✨
 
-    Tampil stylish dan percaya diri dengan produk terbaru kami! Bahan katun premium yang nyaman dan desain grafiti yang edgy bikin kamu jadi pusat perhatian.
-    Stok Terbatas! Pesan Sekarang Sebelum Kehabisan!
+  id : ${req.body.id}
+  Harga Normal: Rp~${formatAngka(req.body.price)}~
+  Diskon: ${req.body.discount}%
 
-    ➡️ Klik di sini untuk cek ongkir dan pesan dari website: ${req.body.detailUrl}
+  Harga Spesial kaos ${req.body.name} 
+  setelah diskon: *Rp${formatAngka(req.body.subPrice)}*
+  Anda Hemat: *Rp${formatAngka(req.body.price - req.body.subPrice)}*
+
+  Yuk jadi Pusat Perhatian!
+
+  ➡️ Klik di sini untuk cek ongkir dan pesan dari website: ${req.body.detailUrl}
     
     imageUrl : ${imageUrl}
 
