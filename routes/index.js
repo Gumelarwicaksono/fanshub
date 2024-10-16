@@ -9,19 +9,19 @@ const path = require('path');
 var router = express.Router();
 const { auth, authorize, createUserWithEmailAndPassword, db, dbsRef, deleteObject, get, getDownloadURL, push, ref, remove, set, signInWithEmailAndPassword, storage, update, uploadBytes } = require('./../firebase');
 const { status } = require('express/lib/response');
-const client = new Client({
-  puppeteer: {
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  },
-  authStrategy: new LocalAuth(),
-});
-client.on('qr', (qr) => {
-  qrcode.generate(qr, { small: true });
-});
+// const client = new Client({
+//   puppeteer: {
+//     args: ['--no-sandbox', '--disable-setuid-sandbox'],
+//   },
+//   authStrategy: new LocalAuth(),
+// });
+// client.on('qr', (qr) => {
+//   qrcode.generate(qr, { small: true });
+// });
 
-client.on('ready', () => {
-  console.log('Client is ready!');
-});
+// client.on('ready', () => {
+//   console.log('Client is ready!');
+// });
 const upload = multer({ storage: multer.memoryStorage() });
 
 function sanitizeFilename(filename) {
@@ -420,120 +420,120 @@ function formatAngka(angka) {
 //   }
 // });
 
-router.post('/share-whatsapp', async (req, res) => {
-  try {
-    const imageUrl = req.body.imageUrl; // Ambil imageUrl dari body request
+// router.post('/share-whatsapp', async (req, res) => {
+//   try {
+//     const imageUrl = req.body.imageUrl; // Ambil imageUrl dari body request
 
-    if (!imageUrl) {
-      return res.status(400).json({
-        status: 'error',
-        message: 'imageUrl is required',
-      });
-    }
+//     if (!imageUrl) {
+//       return res.status(400).json({
+//         status: 'error',
+//         message: 'imageUrl is required',
+//       });
+//     }
 
-    const parsedUrl = new URL(imageUrl); // Parsing URL
-    const fileName = parsedUrl.pathname.split('/').pop(); // Ambil nama file dari path
-    // const fileExtension = path.extname(fileName);
-    const uniqueFileName = `${sanitizeFilename(fileName)}`;
-    const filePath = `./wafoto/${uniqueFileName}`;
+//     const parsedUrl = new URL(imageUrl); // Parsing URL
+//     const fileName = parsedUrl.pathname.split('/').pop(); // Ambil nama file dari path
+//     // const fileExtension = path.extname(fileName);
+//     const uniqueFileName = `${sanitizeFilename(fileName)}`;
+//     const filePath = `./wafoto/${uniqueFileName}`;
 
-    const response = await axios({
-      url: imageUrl,
-      method: 'GET',
-      responseType: 'arraybuffer',
-    });
+//     const response = await axios({
+//       url: imageUrl,
+//       method: 'GET',
+//       responseType: 'arraybuffer',
+//     });
 
-    fs.writeFileSync(filePath, response.data);
+//     fs.writeFileSync(filePath, response.data);
 
-    console.log('Gambar berhasil disimpan ke:', filePath);
+//     console.log('Gambar berhasil disimpan ke:', filePath);
 
-    // Send WhatsApp message with caption
-    const recipientPhoneNumber = '+6283166383802';
+//     // Send WhatsApp message with caption
+//     const recipientPhoneNumber = '+6283166383802';
 
-    const caption = `
-    🔥 PROMO TERBATAS! ${req.body.name} 🔥
+//     const caption = `
+//     🔥 PROMO TERBATAS! ${req.body.name} 🔥
 
-    ✨ ${req.body.name} ✨
+//     ✨ ${req.body.name} ✨
 
-    Harga Normal: Rp${formatAngka(req.body.price)}
-    Diskon: ${req.body.discount}%
-    Harga Spesial kaos ${req.body.name} setelah diskon: *Rp${formatAngka(req.body.subPrice)}*
-    Anda Hemat: *Rp${formatAngka(req.body.price - req.body.subPrice)}*
+//     Harga Normal: Rp${formatAngka(req.body.price)}
+//     Diskon: ${req.body.discount}%
+//     Harga Spesial kaos ${req.body.name} setelah diskon: *Rp${formatAngka(req.body.subPrice)}*
+//     Anda Hemat: *Rp${formatAngka(req.body.price - req.body.subPrice)}*
 
-    Tampil stylish dan percaya diri dengan produk terbaru kami! Bahan katun premium yang nyaman dan desain grafiti yang edgy bikin kamu jadi pusat perhatian. 
-    Stok Terbatas! Pesan Sekarang Sebelum Kehabisan!
+//     Tampil stylish dan percaya diri dengan produk terbaru kami! Bahan katun premium yang nyaman dan desain grafiti yang edgy bikin kamu jadi pusat perhatian.
+//     Stok Terbatas! Pesan Sekarang Sebelum Kehabisan!
 
-    ➡️ Klik di sini untuk cek ongkir dan pesan dari website: ${req.body.detailUrl}`;
+//     ➡️ Klik di sini untuk cek ongkir dan pesan dari website: ${req.body.detailUrl}`;
 
-    client.on('message', async (msg) => {
-      if (msg.body === '!send-media') {
-        const media = MessageMedia.fromFilePath(filePath);
+//     client.on('message', async (msg) => {
+//       if (msg.body === '!send-media') {
+//         const media = MessageMedia.fromFilePath(filePath);
 
-        await client.sendMessage(recipientPhoneNumber, media, { caption: caption });
-      }
-    });
+//         await client.sendMessage(recipientPhoneNumber, media, { caption: caption });
+//       }
+//     });
 
-    // Hapus gambar di direktori wafoto
-    fs.unlinkSync(filePath);
-    console.log('Gambar berhasil dihapus dari direktori wafoto');
+//     // Hapus gambar di direktori wafoto
+//     fs.unlinkSync(filePath);
+//     console.log('Gambar berhasil dihapus dari direktori wafoto');
 
-    // Redirect ke WhatsApp
-    res.redirect(`https://wa.me/${recipientPhoneNumber}?text=➡️ Silahkan Tanya Harga Dengan ONGKIR khusus jakarta barat free ongkir`);
-  } catch (error) {
-    console.error('Error menyimpan gambar atau mengirim ke WhatsApp:', error);
-    res.status(500).json({
-      status: 'error',
-      message: 'Terjadi kesalahan saat menyimpan gambar atau mengirim ke WhatsApp',
-      error: error.message, // Optional: kirimkan pesan error untuk debugging
-    });
-  }
-});
+//     // Redirect ke WhatsApp
+//     res.redirect(`https://wa.me/${recipientPhoneNumber}?text=➡️ Silahkan Tanya Harga Dengan ONGKIR khusus jakarta barat free ongkir`);
+//   } catch (error) {
+//     console.error('Error menyimpan gambar atau mengirim ke WhatsApp:', error);
+//     res.status(500).json({
+//       status: 'error',
+//       message: 'Terjadi kesalahan saat menyimpan gambar atau mengirim ke WhatsApp',
+//       error: error.message, // Optional: kirimkan pesan error untuk debugging
+//     });
+//   }
+// });
 
-router.post('/simpanfoto', async (req, res) => {
-  try {
-    const imageUrl = 'https://firebasestorage.googleapis.com/v0/b/bioproduct-fa5a4.appspot.com/o/images%2Fa421abc5-526f-48ec-90b4-b788275f662e-prod1.png?alt=media&token=84eaaec8-0748-4a21-a534-f132b7b0b645'; // Ambil imageUrl dari body request
+// router.post('/simpanfoto', async (req, res) => {
+//   try {
+//     const imageUrl = 'https://firebasestorage.googleapis.com/v0/b/bioproduct-fa5a4.appspot.com/o/images%2Fa421abc5-526f-48ec-90b4-b788275f662e-prod1.png?alt=media&token=84eaaec8-0748-4a21-a534-f132b7b0b645'; // Ambil imageUrl dari body request
 
-    if (!fs.existsSync('./wafoto')) {
-      fs.mkdirSync('./wafoto');
-    }
-    if (!imageUrl) {
-      return res.status(400).json({
-        status: 'error',
-        message: 'imageUrl is required',
-      });
-    }
+//     if (!fs.existsSync('./wafoto')) {
+//       fs.mkdirSync('./wafoto');
+//     }
+//     if (!imageUrl) {
+//       return res.status(400).json({
+//         status: 'error',
+//         message: 'imageUrl is required',
+//       });
+//     }
 
-    const parsedUrl = new URL(imageUrl); // Parsing URL
-    const fileName = parsedUrl.pathname.split('/').pop(); // Ambil nama file dari path
-    const fileExtension = path.extname(fileName);
-    const uniqueFileName = `${uuidv4()}-${sanitizeFilename(fileName)}`;
-    const filePath = `./wafoto/${uniqueFileName}${fileExtension}`;
+//     const parsedUrl = new URL(imageUrl); // Parsing URL
+//     const fileName = parsedUrl.pathname.split('/').pop(); // Ambil nama file dari path
+//     const fileExtension = path.extname(fileName);
+//     const uniqueFileName = `${uuidv4()}-${sanitizeFilename(fileName)}`;
+//     const filePath = `./wafoto/${uniqueFileName}${fileExtension}`;
 
-    const response = await axios({
-      url: imageUrl,
-      method: 'GET',
-      responseType: 'arraybuffer',
-    });
+//     const response = await axios({
+//       url: imageUrl,
+//       method: 'GET',
+//       responseType: 'arraybuffer',
+//     });
 
-    fs.writeFileSync(filePath, response.data);
+//     fs.writeFileSync(filePath, response.data);
 
-    console.log('Gambar berhasil disimpan ke:', filePath);
+//     console.log('Gambar berhasil disimpan ke:', filePath);
 
-    res.status(200).json({
-      status: 'success',
-      message: 'Gambar berhasil disimpan ke wafoto',
-      filePath: filePath,
-    });
-  } catch (error) {
-    console.error('Error menyimpan gambar:', error);
-    res.status(500).json({
-      status: 'error',
-      message: 'Terjadi kesalahan saat menyimpan gambar',
-      error: error.message, // Optional: kirimkan pesan error untuk debugging
-    });
-  }
-});
+//     res.status(200).json({
+//       status: 'success',
+//       message: 'Gambar berhasil disimpan ke wafoto',
+//       filePath: filePath,
+//     });
+//   } catch (error) {
+//     console.error('Error menyimpan gambar:', error);
+//     res.status(500).json({
+//       status: 'error',
+//       message: 'Terjadi kesalahan saat menyimpan gambar',
+//       error: error.message, // Optional: kirimkan pesan error untuk debugging
+//     });
+//   }
+// });
 
-client.initialize();
+// client.initialize();
 
 module.exports = router;
