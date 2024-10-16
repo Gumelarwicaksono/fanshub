@@ -62,9 +62,9 @@ footer {
   color: black !important;
 }
 .nm-prod {
-  font-size: 1.5rem !important;
+  font-size: 1.6rem !important;
   bottom: 51%;
-  left: 9%;
+  left: 11%;
   padding: 6px;
   color: #011802 !important;
   font-weight: bold;
@@ -87,9 +87,12 @@ footer {
     bottom: 40%;
   }
   .nm-prod {
-    font-size: 1.2rem !important;
-    bottom: 53%;
-    left: 9%;
+    font-size: 0.9rem !important;
+    bottom: 49%;
+    left: 11%;
+  }
+  .delete {
+    font-size: 0.7rem;
   }
   .img-prod {
     right: 3rem;
@@ -111,9 +114,9 @@ footer {
     color: black !important;
   }
   .nm-prod {
-    font-size: 1.1rem !important;
-    bottom: 51% !important;
-    left: 7% !important;
+    font-size: 1.2rem !important;
+    bottom: 50% !important;
+    left: 17% !important;
   }
   .img-prod {
     right: 3rem !important;
@@ -128,19 +131,19 @@ footer {
   }
 }
 /* Tampilan mobile 2 (Lebar layar antara 768px dan 991px) */
-@media (min-width: 360px) and (max-width: 428px) {
+@media (min-width: 350px) and (max-width: 428px) {
   .dsc-prod {
     font-size: 2.1rem;
     left: 49%;
     bottom: 43%;
   }
   .nm-prod {
-    font-size: 0.7rem !important;
-    bottom: 52%;
-    left: 7% !important;
+    font-size: 0.4rem !important;
+    bottom: 50%;
+    left: 10% !important;
   }
   .delete {
-    font-size: 0.5rem;
+    font-size: 0.3rem;
   }
   .img-prod {
     right: 1.5rem;

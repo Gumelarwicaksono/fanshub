@@ -65,7 +65,7 @@ router.get('/', async (req, res) => {
       baner.id = childSnapshot.key;
       baners.push(baner);
     });
-    console.log(products);
+    // console.log(products);
     res.render('index', {
       products: products,
       categories: categories,
@@ -133,27 +133,27 @@ router.post('/products', authorize, upload.single('image'), async function (req,
       await push(categoryRef, { name: categoryName });
     }
     // Upload gambar ke Firebase Storage (jika ada)
-    let imageUrl = '';
-    if (file) {
-      const imageRef = dbsRef(storage, `images/${uuidv4()}-${file.originalname}`);
-      await uploadBytes(imageRef, file.buffer);
-      imageUrl = await getDownloadURL(imageRef);
-    }
-
     // let imageUrl = '';
     // if (file) {
     //   const imageRef = dbsRef(storage, `images/${uuidv4()}-${file.originalname}`);
-    //   const metadata = {
-    //     contentType: file.mimetype, // e.g. image/jpeg, image/png, etc.
-    //     customMetadata: {
-    //       description: 'This is a products image',
-    //     },
-    //     contentDisposition: 'inline; filename="' + file.originalname + '"',
-    //     cacheControl: 'public, max-age=31536000', // cache for 1 year
-    //   };
-    //   await uploadBytes(imageRef, file.buffer, metadata);
+    //   await uploadBytes(imageRef, file.buffer);
     //   imageUrl = await getDownloadURL(imageRef);
     // }
+
+    let imageUrl = '';
+    if (file) {
+      const imageRef = dbsRef(storage, `images/${uuidv4()}-${file.originalname}`);
+      const metadata = {
+        contentType: file.mimetype, // e.g. image/jpeg, image/png, etc.
+        customMetadata: {
+          description: 'This is a products image',
+        },
+        contentDisposition: 'inline; filename="' + file.originalname + '"',
+        cacheControl: 'public, max-age=31536000', // cache for 1 year
+      };
+      await uploadBytes(imageRef, file.buffer, metadata);
+      imageUrl = await getDownloadURL(imageRef);
+    }
     // Simpan produk ke Realtime Database
     const newProductRef = push(ref(db, 'products'));
     await set(newProductRef, {
@@ -420,74 +420,69 @@ function formatAngka(angka) {
 //   }
 // });
 
-// router.post('/share-whatsapp', async (req, res) => {
-//   try {
-//     const imageUrl = req.body.imageUrl; // Ambil imageUrl dari body request
+router.post('/share-whatsapp', async (req, res) => {
+  try {
+    const imageUrl = req.body.imageUrl; // Ambil imageUrl dari body request
 
-//     if (!imageUrl) {
-//       return res.status(400).json({
-//         status: 'error',
-//         message: 'imageUrl is required',
-//       });
-//     }
+    if (!imageUrl) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'imageUrl is required',
+      });
+    }
 
-//     const parsedUrl = new URL(imageUrl); // Parsing URL
-//     const fileName = parsedUrl.pathname.split('/').pop(); // Ambil nama file dari path
-//     // const fileExtension = path.extname(fileName);
-//     const uniqueFileName = `${sanitizeFilename(fileName)}`;
-//     const filePath = `./wafoto/${uniqueFileName}`;
+    // const parsedUrl = new URL(imageUrl); // Parsing URL?// Ambil nama file dari path
+    // const fileExtension = path.extname(fileName);
+    // const uniqueFileName = `${sanitizeFilename(fileName)}`;
+    // const filePath = `./wafoto/${uniqueFileName}`;
 
-//     const response = await axios({
-//       url: imageUrl,
-//       method: 'GET',
-//       responseType: 'arraybuffer',
-//     });
+    // const response = await axios({
+    //   url: imageUrl,
+    //   method: 'GET',
+    //   responseType: 'arraybuffer',
+    // });
 
-//     fs.writeFileSync(filePath, response.data);
+    // fs.writeFileSync(filePath, response.data);
 
-//     console.log('Gambar berhasil disimpan ke:', filePath);
+    // console.log('Gambar berhasil disimpan ke:', filePath);
 
-//     // Send WhatsApp message with caption
-//     const recipientPhoneNumber = '+6283166383802';
+    // Send WhatsApp message with caption
+    const recipientPhoneNumber = '+6283166383802';
 
-//     const caption = `
-//     🔥 PROMO TERBATAS! ${req.body.name} 🔥
+    const caption = `
+    🔥 PROMO TERBATAS! ${req.body.name} 🔥
 
-//     ✨ ${req.body.name} ✨
+    ✨ ${req.body.name} ✨
+    id : ${req.body.id}
+    Harga Normal: Rp${formatAngka(req.body.price)}
+    Diskon: ${req.body.discount}%
+    Harga Spesial kaos ${req.body.name} setelah diskon: *Rp${formatAngka(req.body.subPrice)}*
+    Anda Hemat: *Rp${formatAngka(req.body.price - req.body.subPrice)}*
 
-//     Harga Normal: Rp${formatAngka(req.body.price)}
-//     Diskon: ${req.body.discount}%
-//     Harga Spesial kaos ${req.body.name} setelah diskon: *Rp${formatAngka(req.body.subPrice)}*
-//     Anda Hemat: *Rp${formatAngka(req.body.price - req.body.subPrice)}*
+    Tampil stylish dan percaya diri dengan produk terbaru kami! Bahan katun premium yang nyaman dan desain grafiti yang edgy bikin kamu jadi pusat perhatian.
+    Stok Terbatas! Pesan Sekarang Sebelum Kehabisan!
 
-//     Tampil stylish dan percaya diri dengan produk terbaru kami! Bahan katun premium yang nyaman dan desain grafiti yang edgy bikin kamu jadi pusat perhatian.
-//     Stok Terbatas! Pesan Sekarang Sebelum Kehabisan!
+    ➡️ Klik di sini untuk cek ongkir dan pesan dari website: ${req.body.detailUrl}
+    
+    imageUrl : ${imageUrl}
 
-//     ➡️ Klik di sini untuk cek ongkir dan pesan dari website: ${req.body.detailUrl}`;
+    `;
 
-//     client.on('message', async (msg) => {
-//       if (msg.body === '!send-media') {
-//         const media = MessageMedia.fromFilePath(filePath);
+    // Hapus gambar di direktori wafoto
+    // fs.unlinkSync(filePath);
+    // console.log('Gambar berhasil dihapus dari direktori wafoto');
 
-//         await client.sendMessage(recipientPhoneNumber, media, { caption: caption });
-//       }
-//     });
-
-//     // Hapus gambar di direktori wafoto
-//     fs.unlinkSync(filePath);
-//     console.log('Gambar berhasil dihapus dari direktori wafoto');
-
-//     // Redirect ke WhatsApp
-//     res.redirect(`https://wa.me/${recipientPhoneNumber}?text=➡️ Silahkan Tanya Harga Dengan ONGKIR khusus jakarta barat free ongkir`);
-//   } catch (error) {
-//     console.error('Error menyimpan gambar atau mengirim ke WhatsApp:', error);
-//     res.status(500).json({
-//       status: 'error',
-//       message: 'Terjadi kesalahan saat menyimpan gambar atau mengirim ke WhatsApp',
-//       error: error.message, // Optional: kirimkan pesan error untuk debugging
-//     });
-//   }
-// });
+    // Redirect ke WhatsApp
+    res.redirect(`https://wa.me/${recipientPhoneNumber}?text=${encodeURIComponent(`${caption}`)}`);
+  } catch (error) {
+    console.error('Error menyimpan gambar atau mengirim ke WhatsApp:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Terjadi kesalahan saat menyimpan gambar atau mengirim ke WhatsApp',
+      error: error.message, // Optional: kirimkan pesan error untuk debugging
+    });
+  }
+});
 
 // router.post('/simpanfoto', async (req, res) => {
 //   try {
