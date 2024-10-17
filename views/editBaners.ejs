@@ -31,6 +31,10 @@
         <h2 class="text-center">edit baners fanshub</h2>
         <form action="/api/baners/e/<%= baners.id %>" method="post" enctype="multipart/form-data">
           <div class="form-group">
+            <label for="banerName">banerName:</label>
+            <input type="text" id="banerName" name="banerName" class="form-control border-success mt-2 rounded-pill" value="<%= baners.banerName %>" />
+          </div>
+          <div class="form-group">
             <label for="banerDetaileUrl">banerDetaileUrl:</label>
             <input type="text" id="banerDetaileUrl" name="banerDetaileUrl" class="form-control border-success mt-2 rounded-pill" value="<%= baners.banerDetaileUrl %>" />
           </div>

@@ -10,13 +10,13 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-    <link rel="icon" type="image/png" sizes="128x128 " href="./image/logo.png" />
+    <link rel="icon" type="image/png" sizes="128x128 " href="./images/logo1.png" />
     <title>Fanshub - Hobi - Anime|Drakor|Kucing|Kartun|all</title>
   </head>
   <body class="bg-light">
     <nav class="navbar navbar-light bg-seconndary shadow mt-0">
       <div class="container-fluid">
-        <span class="navbar-brand fw-bold mb-0 ms-2 h1"> Fanns<span class="navbar-brand text-success">hub</span> </span>
+        <span class="navbar-brand fw-bold mb-0 ms-2 h1"> Fans<span class="navbar-brand text-success">hub</span> </span>
       </div>
     </nav>
     <header>
@@ -29,23 +29,36 @@
           </div>
           <div class="carousel-inner rounded-custom">
             <% baners.forEach((item, index) => { %>
-            <div class="carousel-item <%= index === 0 ? 'active' : '' %> position-relative">
-              <img src="<%= item.banerImg %>" class="d-block w-100 rounded-custom" alt="..." />
-              <div class="carousel-caption d-flex flex-column align-items-center justify-content-center position-absolute top-0 bottom-0 start-0 w-100 h-100">
-                <div class="overlay d-flex justify-content-around w-100 h-100">
-                  <div class="text-white h-100">
-                    <p class="position-absolute nm-prod d-flex flex-column">Rp<%= item.banerPrice %><del class="text-secondary delete">Rp<%= item.banerSubPrice %></del></p>
+              <div class="carousel-item <%= index === 0 ? 'active' : '' %> position-relative" >
+                <img src="<%= item.banerImg %>" id="baner-klik" class="d-block w-100 rounded-custom" alt="fanshub baner" />
+                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center position-absolute top-0 bottom-0 start-0 w-100 h-100">
+                  <div class="overlay d-flex justify-content-around w-100 h-100">
+                    <div class="text-white h-100">
+                      <p class="position-absolute nm-prod d-flex flex-column">Rp<%= item.banerPrice %><del class="text-secondary delete">Rp<%= item.banerSubPrice %></del></p>
+                      <form action="/api/share-banerwa" method="post">
+                        <input type="hidden" name="id" value="<%= item.id %>" />
+                        <input type="hidden" name="banerName" value="<%= item.banerName %>" />
+                        <input type="hidden" name="banerImgUrl" value="<%= item.banerImgUrl %>" />
+                        <input type="hidden" name="banerPrice" value="<%= item.banerPrice %>" />
+                        <input type="hidden" name="banerDiscount" value="<%= item.banerDiscount %>" />
+                        <input type="hidden" name="banerSubPrice" value="<%=   item.banerSubPrice %>" />
+                        <input type="hidden" name="banerDetaileUrl" value="<%= item.banerDetaileUrl %>" />
+                        <button type="submit" class=" btn btn-sm btn-success m-0 ps-3 pe-3 position-absolute rounded-pill border-0 buy ">
+                        Beli Sekarang  <i class="bi bi-cart text-warning fw-bold "></i>
+                        </button>
+                      </form>
+                    </div>
+                    <div class="h-100">
+                      <p class="position-absolute fw-bold dsc-prod"><%= item.banerDiscount %>%</p>
+                    </div>
+                    <img class="position-absolute img-prod" src="<%= item.banerImgUrl %>" alt="" />
                   </div>
-                  <div class="h-100">
-                    <p class="position-absolute fw-bold dsc-prod"><%= item.banerDiscount %>%</p>
-                  </div>
-                  <img class="position-absolute img-prod" src="<%= item.banerImgUrl %>" alt="" />
                 </div>
+                <span class="overlay d-flex justify-content-center w-100 bottom-0 mt-5">
+                  <p class="text-dark position-absolute tx-tautan">@<%= item.banerDetaileUrl %></p>
+                </span>
               </div>
-              <span class="overlay d-flex justify-content-center w-100 bottom-0 mt-5">
-                <p class="text-dark position-absolute tx-tautan">@<%= item.banerDetaileUrl %></p>
-              </span>
-            </div>
+            </button>
             <% }); %>
           </div>
           <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -55,7 +68,6 @@
           <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
-          </button>
         </div>
       </div>
     </header>
@@ -128,7 +140,7 @@
       </section>
     </main>
     <footer class="bg-dark d-flex justify-content-center align-items-center py-3">
-      <p class="text-secondary mb-0">&copy; <span id="current-year"></span> fanshub.my.id. All rights reserved.</p>
+      <p class="text-secondary mb-0">&copy; <span id="current-year"></span> <a href="https://fanshub.gumelar.site">fanshub</a> All rights reserved.</p>
     </footer>
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script>
@@ -145,6 +157,9 @@
       function formatAngka(angka) {
         return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
       }
+
+
+      // Contoh data yang akan dikirim
 
       //FILTER BY CATEGORY
       function filterProductsByCategory(val) {

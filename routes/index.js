@@ -463,11 +463,14 @@ router.post('/share-whatsapp', async (req, res) => {
   setelah diskon: *Rp${formatAngka(req.body.subPrice)}*
   Anda Hemat: *Rp${formatAngka(req.body.price - req.body.subPrice)}*
 
-  Yuk jadi Pusat Perhatian!
-
-  ➡️ Klik di sini untuk cek ongkir dan pesan dari website: ${req.body.detailUrl}
+ Cekout bisa lewat Wa atau web melalui website!
+  jika lewat web cenderung lebih mahal karena ada biaya admin platfom
+  lewat wa lebih murah banyak potongan nya cekout sekarang...
+  
+➡️ Klik di sini untuk cek ongkir dan pesan dari website: ${req.body.detailUrl}
     
-    imageUrl : ${imageUrl}
+➡️imageUrl : ${imageUrl}
+➡️halaman web katalog : https://fanshub.gumelar.site 
 
     `;
 

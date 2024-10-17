@@ -15,7 +15,7 @@ router.post(
   ]),
   async function (req, res) {
     try {
-      const { banerDetaileUrl, banerMetsos, banerPrice, banerSubPrice } = req.body;
+      const { banerName, banerDetaileUrl, banerMetsos, banerPrice, banerSubPrice } = req.body;
       const file1 = req.files.banerImg1[0];
       const file2 = req.files.banerImg2[0];
       if (!file1 || !file2) {
@@ -42,6 +42,7 @@ router.post(
       // Simpan produk ke Realtime Database
       const newProductRef = push(ref(db, 'baners'));
       await set(newProductRef, {
+        banerName,
         banerDetaileUrl,
         banerDiscount: discount,
         banerImg: imageUrl1,
@@ -78,7 +79,7 @@ router.post(
   async function (req, res) {
     try {
       const { id } = req.params;
-      const { banerDetaileUrl, banerMetsos, banerPrice, banerSubPrice } = req.body;
+      const { banerName, banerDetaileUrl, banerMetsos, banerPrice, banerSubPrice } = req.body;
       const file1 = req.files.banerImg1;
       const file2 = req.files.banerImg2;
 
@@ -111,6 +112,7 @@ router.post(
       }
       // Update produk ke Realtime Database
       await update(ref(db, `baners/${id}`), {
+        banerName,
         banerDetaileUrl,
         banerDiscount: discount,
         banerImg: imageUrl1,
@@ -182,6 +184,49 @@ router.delete('/baners/:id/delete', authorize, async function (req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).send('Terjadi kesalahan.');
+  }
+});
+function formatAngka(angka) {
+  return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+router.post('/share-banerwa', async (req, res) => {
+  console.log(req.body);
+  try {
+    const recipientPhoneNumber = '+6283166383802';
+
+    const caption = `
+    Silahkan di cekout kak
+    🔥 PROMO TERBATAS! ${req.body.banerName} 🔥
+
+  ✨ ${req.body.banerName} ✨
+
+  id : ${req.body.id}
+  Harga Normal: Rp~${formatAngka(req.body.banerPrice)}~
+  Diskon: ${req.body.banerDiscount}%
+
+  Harga Spesial kaos ${req.body.banerName} 
+  setelah diskon: *Rp${formatAngka(req.body.banerSubPrice)}*
+  Anda Hemat: *Rp${formatAngka(req.body.banerPrice - req.body.banerSubPrice)}*
+
+  Cekout bisa lewat Wa atau web melalui website!
+  jika lewat web cenderung lebih mahal karena ada biaya admin platfom
+  lewat wa lebih murah banyak potongan nya cekout sekarang...
+
+➡️ Klik di sini untuk cek ongkir dan pesan dari website: ${req.body.banerDetaileUrl}
+    
+➡️imageUrl : ${req.body.banerImgUrl}
+➡️halaman web katalog : https://fanshub.gumelar.site
+
+    `;
+
+    res.redirect(`https://wa.me/${recipientPhoneNumber}?text=${encodeURIComponent(`${caption}`)}`);
+  } catch (error) {
+    console.error('Error menyimpan gambar atau mengirim ke WhatsApp:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Terjadi kesalahan saat menyimpan gambar atau mengirim ke WhatsApp',
+      error: error.message, // Optional: kirimkan pesan error untuk debugging
+    });
   }
 });
 
