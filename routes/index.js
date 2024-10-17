@@ -466,7 +466,7 @@ router.post('/share-whatsapp', async (req, res) => {
  Cekout bisa lewat Wa atau web melalui website!
   jika lewat web cenderung lebih mahal karena ada biaya admin platfom
   lewat wa lebih murah banyak potongan nya cekout sekarang...
-  
+
 ➡️ Klik di sini untuk cek ongkir dan pesan dari website: ${req.body.detailUrl}
     
 ➡️imageUrl : ${imageUrl}
