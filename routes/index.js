@@ -450,26 +450,27 @@ router.post('/share-whatsapp', async (req, res) => {
     const recipientPhoneNumber = '+6283166383802';
 
     const caption = `
-    Silahkan di cekout kak
-    🔥 PROMO TERBATAS! ${req.body.name} 🔥
+Silahkan di cekout kak
+🔥 PROMO TERBATAS! ${req.body.name} 🔥
 
-  ✨ ${req.body.name} ✨
+✨ ${req.body.name} ✨
 
-  id : ${req.body.id}
-  Harga Normal: Rp~${formatAngka(req.body.price)}~
-  Diskon: ${req.body.discount}%
+id : ${req.body.id}
 
-  Harga Spesial kaos ${req.body.name} 
-  setelah diskon: *Rp${formatAngka(req.body.subPrice)}*
-  Anda Hemat: *Rp${formatAngka(req.body.price - req.body.subPrice)}*
+Harga :*Rp*.*${formatAngka(req.body.price)}*
 
- Cekout bisa lewat Wa atau web melalui website!
-  jika lewat web cenderung lebih mahal karena ada biaya admin platfom
-  lewat wa lebih murah banyak potongan nya cekout sekarang...
+*Diskon* : *${req.body.discount}%*
+
+setelah diskon: *Rp${formatAngka(req.body.subPrice)}*
+
+Cekout bisa lewat Wa atau  website!
+jika lewat web cenderung lebih mahal karena ada biaya admin platfom
+lewat wa lebih murah banyak potongan nya cekout sekarang...
 
 ➡️ Klik di sini untuk cek ongkir dan pesan dari website: ${req.body.detailUrl}
     
 ➡️imageUrl : ${imageUrl}
+
 ➡️halaman web katalog : https://fanshub.gumelar.site 
 
     `;
