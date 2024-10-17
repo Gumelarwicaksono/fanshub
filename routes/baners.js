@@ -195,18 +195,15 @@ router.post('/share-banerwa', async (req, res) => {
     const recipientPhoneNumber = '+6283166383802';
 
     const caption = `
-Silahkan di cekout kak
+   Silahkan di cekout kak
 🔥 PROMO TERBATAS! ${req.body.banerName} 🔥
 
 ✨ ${req.body.banerName} ✨
 
 id : ${req.body.id}
-
-*Harga Normal*: *Rp*.*${formatAngka(req.body.banerPrice)}*
-
-*Diskon*: *${req.body.banerDiscount}%*
-
-*setelah diskon*: *Rp${formatAngka(req.body.banerSubPrice)}*
+Harga Normal: *Rp*.*${formatAngka(req.body.banerPrice)}*
+Diskon: *${req.body.banerDiscount}%*
+setelah diskon: *Rp${formatAngka(req.body.banerSubPrice)}*
 
 Cekout bisa lewat Wa atau website!
 jika lewat web cenderung lebih mahal karena ada biaya admin platfom

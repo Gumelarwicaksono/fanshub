@@ -430,37 +430,18 @@ router.post('/share-whatsapp', async (req, res) => {
         message: 'imageUrl is required',
       });
     }
-
-    // const parsedUrl = new URL(imageUrl); // Parsing URL?// Ambil nama file dari path
-    // const fileExtension = path.extname(fileName);
-    // const uniqueFileName = `${sanitizeFilename(fileName)}`;
-    // const filePath = `./wafoto/${uniqueFileName}`;
-
-    // const response = await axios({
-    //   url: imageUrl,
-    //   method: 'GET',
-    //   responseType: 'arraybuffer',
-    // });
-
-    // fs.writeFileSync(filePath, response.data);
-
-    // console.log('Gambar berhasil disimpan ke:', filePath);
-
     // Send WhatsApp message with caption
     const recipientPhoneNumber = '+6283166383802';
 
     const caption = `
-Silahkan di cekout kak
+   Silahkan di cekout kak
 🔥 PROMO TERBATAS! ${req.body.name} 🔥
 
 ✨ ${req.body.name} ✨
 
 id : ${req.body.id}
-
 Harga :*Rp*.*${formatAngka(req.body.price)}*
-
-*Diskon* : *${req.body.discount}%*
-
+Diskon : *${req.body.discount}%*
 setelah diskon: *Rp${formatAngka(req.body.subPrice)}*
 
 Cekout bisa lewat Wa atau  website!
