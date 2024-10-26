@@ -1,6 +1,6 @@
-const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
-const qrcode = require('qrcode-terminal');
-const axios = require('axios');
+// const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
+// const qrcode = require('qrcode-terminal');
+// const axios = require('axios');
 var express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const multer = require('multer');
@@ -24,11 +24,10 @@ const { status } = require('express/lib/response');
 // });
 const upload = multer({ storage: multer.memoryStorage() });
 
-function sanitizeFilename(filename) {
-  // Hapus karakter yang tidak valid (ganti dengan '_')
-  return filename.replace(/[^a-z0-9\.\-_ ]/gi, '_');
-}
-function register0(email, password, displayName) {}
+// function sanitizeFilename(filename) {
+//   // Hapus karakter yang tidak valid (ganti dengan '_')
+//   return filename.replace(/[^a-z0-9\.\-_ ]/gi, '_');
+// }
 /* GET home page. */
 // router.get('/', function (req, res, next) {
 //   res.render('index', { title: 'Express' });
@@ -111,9 +110,14 @@ router.get('/signinpage', (req, res) => {
   res.render('signinpage');
 });
 
+function getValidColors(colors) {
+  // Menggunakan filter untuk menyaring warna yang valid
+  return colors.filter((color) => color !== undefined && color !== null && color !== '');
+}
+
 router.post('/products', authorize, upload.single('image'), async function (req, res) {
   try {
-    const { name, price, subPrice, category, detailUrl, rating, terjual, gudang } = req.body;
+    const { name, price, subPrice, category, color1, color2, color3, rating, terjual, gudang } = req.body;
     const file = req.file;
     if (!file) {
       return res.status(400).send('Tidak ada file yang diunggah.');
@@ -154,6 +158,9 @@ router.post('/products', authorize, upload.single('image'), async function (req,
       await uploadBytes(imageRef, file.buffer, metadata);
       imageUrl = await getDownloadURL(imageRef);
     }
+
+    const colors = [color1, color2, color3];
+    const colorsValue = getValidColors(colors);
     // Simpan produk ke Realtime Database
     const newProductRef = push(ref(db, 'products'));
     await set(newProductRef, {
@@ -161,7 +168,7 @@ router.post('/products', authorize, upload.single('image'), async function (req,
       price,
       subPrice,
       category: categoryName,
-      detailUrl,
+      color: colorsValue,
       imageUrl,
       discount,
       rating,
@@ -213,7 +220,7 @@ router.get('/addproducts', authorize, (req, res) => {
 router.post('/products/e/:id', authorize, upload.single('image'), async function (req, res) {
   try {
     const { id } = req.params;
-    const { name, price, subPrice, category, detailUrl, rating, terjual, gudang } = req.body;
+    const { name, price, subPrice, category, color1, color2, color3, rating, terjual, gudang } = req.body;
     const file = req.file;
 
     // Cek produk jika belum ada (menggunakan Realtime Database)
@@ -247,14 +254,15 @@ router.post('/products/e/:id', authorize, upload.single('image'), async function
     } else {
       imageUrl = productSnapshot.val().imageUrl;
     }
-
+    const colors = [color1, color2, color3];
+    const colorsValue = getValidColors(colors);
     // Update produk ke Realtime Database
     await update(ref(db, `products/${id}`), {
       name,
       price,
       subPrice,
       category: categoryName,
-      detailUrl,
+      color: colorsValue,
       imageUrl,
       discount,
       rating,
@@ -281,6 +289,28 @@ router.get('/products/edit/:id', authorize, async function (req, res) {
       const product = productSnapshot.val();
       product.id = productSnapshot.key;
       res.render('editProduct', {
+        product: product,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Terjadi kesalahan.');
+  }
+});
+
+//HALAMAN DETAIL PRODUCT
+router.get('/products/detail/:id', async function (req, res) {
+  try {
+    const id = req.params.id;
+    const productRef = ref(db, `products/${id}`);
+    const productSnapshot = await get(productRef);
+    if (!productSnapshot.exists()) {
+      res.status(404).send('Produk tidak ditemukan.');
+    } else {
+      const product = productSnapshot.val();
+
+      product.id = productSnapshot.key;
+      res.render('productDetaile', {
         product: product,
       });
     }
@@ -433,26 +463,42 @@ router.post('/share-whatsapp', async (req, res) => {
     // Send WhatsApp message with caption
     const recipientPhoneNumber = '+6283166383802';
 
+    const colors = [req.body.color1, req.body.color2, req.body.color3];
+    const colorsValue = getValidColors(colors);
+
     const caption = `
-   Silahkan di cekout kak
-🔥 PROMO TERBATAS! ${req.body.name} 🔥
+🔥 KHUSUS BUAT KAMU!🔥
 
 ✨ ${req.body.name} ✨
 
-id : ${req.body.id}
 Harga :*Rp*.*${formatAngka(req.body.price)}*
 Diskon : *${req.body.discount}%*
 setelah diskon: *Rp${formatAngka(req.body.subPrice)}*
 
-Cekout bisa lewat Wa atau  website!
-jika lewat web cenderung lebih mahal karena ada biaya admin platfom
-lewat wa lebih murah banyak potongan nya cekout sekarang...
+Spesifikasi Produk :
+- Pola : Reguler Fit
+- Model : O neck short sleeve
+- Kain : 100% cotton combed 24s (Tebal)
+- Gender : Unisex (Pria dan Wanita)
+- Bahan : Halus, Adem, Menyerap Keringat
+- Sablon : Digital High Quality
 
-➡️ Klik di sini untuk cek ongkir dan pesan dari website: ${req.body.detailUrl}
-    
-➡️imageUrl : ${imageUrl}
+Ukuran : [ S, M, L, XL  ]
 
-➡️halaman web katalog : https://fanshub.gumelar.site 
+Pilihan warna Kaos:
+ ${colorsValue.map((color) => `-${color}`).join('\n')}
+
+*SILAHKAN ISI FORM DIBAWAH INI UNTUK MELAKUKAN PEMESANAN ! :*
+ id : ${req.body.id}
+ Nama pemesan :
+ Ukuran baju:
+ Warna baju:
+ Alamat lengkap :
+ No HP / wa  :
+ 
+ ➡️product : https://fanshub.gumelar.site/products/detaile/${req.body.id}
+ ➡️halaman web katalog : https://fanshub.gumelar.site 
+ ➡️imageUrl : ${imageUrl}
 
     `;
 

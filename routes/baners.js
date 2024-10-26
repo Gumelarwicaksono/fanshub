@@ -6,6 +6,11 @@ const { authorize, db, dbsRef, deleteObject, get, getDownloadURL, push, ref, rem
 
 const upload = multer({ storage: multer.memoryStorage() });
 
+function getValidColors(colors) {
+  // Menggunakan filter untuk menyaring warna yang valid
+  return colors.filter((color) => color !== undefined && color !== null && color !== '');
+}
+
 router.post(
   '/baners',
   authorize,
@@ -15,7 +20,7 @@ router.post(
   ]),
   async function (req, res) {
     try {
-      const { banerName, banerDetaileUrl, banerMetsos, banerPrice, banerSubPrice } = req.body;
+      const { banerName, banerDetaileUrl, color1, color2, color3, banerMetsos, banerPrice, banerSubPrice } = req.body;
       const file1 = req.files.banerImg1[0];
       const file2 = req.files.banerImg2[0];
       if (!file1 || !file2) {
@@ -39,11 +44,14 @@ router.post(
         imageUrl2 = await getDownloadURL(imageRef2);
       }
 
+      const colors = [color1, color2, color3];
+      const colorsValue = getValidColors(colors);
       // Simpan produk ke Realtime Database
       const newProductRef = push(ref(db, 'baners'));
       await set(newProductRef, {
         banerName,
         banerDetaileUrl,
+        color: colorsValue,
         banerDiscount: discount,
         banerImg: imageUrl1,
         banerImgUrl: imageUrl2,
@@ -79,7 +87,7 @@ router.post(
   async function (req, res) {
     try {
       const { id } = req.params;
-      const { banerName, banerDetaileUrl, banerMetsos, banerPrice, banerSubPrice } = req.body;
+      const { banerName, banerDetaileUrl, color1, color2, color3, banerMetsos, banerPrice, banerSubPrice } = req.body;
       const file1 = req.files.banerImg1;
       const file2 = req.files.banerImg2;
 
@@ -110,10 +118,14 @@ router.post(
       } else {
         imageUrl2 = productSnapshot.val().banerImgUrl;
       }
+
+      const colors = [color1, color2, color3];
+      const colorsValue = getValidColors(colors);
       // Update produk ke Realtime Database
       await update(ref(db, `baners/${id}`), {
         banerName,
         banerDetaileUrl,
+        colors: colorsValue,
         banerDiscount: discount,
         banerImg: imageUrl1,
         banerImgUrl: imageUrl2,
@@ -190,30 +202,43 @@ function formatAngka(angka) {
   return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 router.post('/share-banerwa', async (req, res) => {
-  console.log(req.body);
   try {
     const recipientPhoneNumber = '+6283166383802';
+    const colors = [req.body.color1, req.body.color2, req.body.color3];
+    const colorsValue = getValidColors(colors);
 
     const caption = `
-   Silahkan di cekout kak
-🔥 PROMO TERBATAS! ${req.body.banerName} 🔥
+🔥 KHUSUS BUAT KAMU!🔥
 
 ✨ ${req.body.banerName} ✨
 
-id : ${req.body.id}
 Harga Normal: *Rp*.*${formatAngka(req.body.banerPrice)}*
 Diskon: *${req.body.banerDiscount}%*
-setelah diskon: *Rp${formatAngka(req.body.banerSubPrice)}*
+Harga setelah diskon: *Rp${formatAngka(req.body.banerSubPrice)}*
 
-Cekout bisa lewat Wa atau website!
-jika lewat web cenderung lebih mahal karena ada biaya admin platfom
-lewat wa lebih murah banyak potongan nya cekout sekarang...
+Spesifikasi Produk :
+- Pola : Reguler Fit
+- Model : O neck short sleeve
+- Kain : 100% cotton combed 24s (Tebal)
+- Gender : Unisex (Pria dan Wanita)
+- Bahan : Halus, Adem, Menyerap Keringat
+- Sablon : Digital High Quality
 
-➡️ Klik di sini untuk cek ongkir dan pesan dari website: ${req.body.banerDetaileUrl}
-    
-➡️imageUrl : ${req.body.banerImgUrl}
+Pilihan warna Kaos:
+${colorsValue.map((color) => `-${color}`).join('\n')}
 
-➡️halaman web katalog : https://fanshub.gumelar.site
+*SILAHKAN ISI FORM DIBAWAH INI UNTUK MELAKUKAN PEMESANAN ! :*
+
+ id : ${req.body.id}
+ Nama pemesan :
+ Ukuran baju:
+ Warna baju:
+ Alamat lengkap :
+ No HP / wa  :
+ 
+ 
+ ➡️halaman web katalog : https://fanshub.gumelar.site
+ ➡️imageUrl : ${req.body.banerImgUrl}
 
     `;
 

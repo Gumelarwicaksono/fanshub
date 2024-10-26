@@ -122,8 +122,8 @@
                     </div>
                   </div>
                   <p class="card-text text-secondary fs-6 m-0"><i class="bi bi-geo-alt"></i><%= product.gudang %></p>
-                  <div class="d-flex justify-content-between">
-                    <a href="<%= product.detailUrl %>" class="btn btn-sm btn-success m-0 ps-3 pe-3">Buy Now</a>
+                  <div class="">
+                    <!-- <a href="" class="btn btn-sm btn-success m-0 ps-3 pe-3">Buy Now</a> -->
                     <form action="/share-whatsapp" method="post">
                       <input type="hidden" name="id" value="<%= product.id %>" />
                       <input type="hidden" name="imageUrl" value="<%= product.imageUrl %>" />
@@ -131,9 +131,11 @@
                       <input type="hidden" name="price" value="<%= product.price %>" />
                       <input type="hidden" name="subPrice" value="<%=   product.subPrice %>" />
                       <input type="hidden" name="discount" value="<%= product.discount %>" />
-                      <input type="hidden" name="detailUrl" value="<%= product.detailUrl %>" />
+                      <input type="hidden" name="color1" value="<%= product.color && product.color.length > 0 ? product.color[0] : '' %>" />
+                      <input type="hidden" name="color2" value="<%= product.color && product.color.length > 0 ? product.color[1] : '' %>" />
+                      <input type="hidden" name="color3" value="<%= product.color && product.color.length > 0 ? product.color[2] : '' %>" />
                       <button type="submit" class="btn btn-sm btn-success m-0 ps-3 pe-3">
-                        <i class="bi bi-whatsapp"></i>
+                        Buy Now <i class="bi bi-whatsapp"></i>
                       </button>
                     </form>
                   </div>
@@ -201,8 +203,7 @@
                     </div>
                   </div>
                   <p class="card-text text-secondary fs-6 m-0"><i class="bi bi-geo-alt"></i> ${product.gudang}</p>
-                  <div class="d-flex justify-content-between">
-                    <a href="${product.detailUrl}" class="btn btn-sm btn-success m-0 ps-3 pe-3">Buy Now</a>
+                  <div class="">
                    <form action="/share-whatsapp" method="post">
                       <input type="hidden" name="id" value="${product.id}" />
                       <input type="hidden" name="imageUrl" value="${product.imageUrl}" />
@@ -210,9 +211,11 @@
                       <input type="hidden" name="price" value="${product.price}" />
                       <input type="hidden" name="subPrice" value="${product.subPrice}" />
                       <input type="hidden" name="discount" value="${product.discount}" />
-                      <input type="hidden" name="detailUrl" value="${product.detailUrl}" />
+                      <input type="hidden" name="color1" value="${ product.color && product.color.length > 0 ? product.color[0] : '' }" />
+                      <input type="hidden" name="color2" value="${ product.color && product.color.length > 0 ? product.color[1] : '' }" />
+                      <input type="hidden" name="color3" value="${ product.color && product.color.length > 0 ? product.color[2] : '' }" />
                       <button type="submit" class="btn btn-sm btn-success m-0 ps-3 pe-3">
-                        <i class="bi bi-whatsapp"></i>
+                      Buy Now  <i class="bi bi-whatsapp"></i>
                       </button>
                     </form>
                   </div>
@@ -241,8 +244,7 @@
                     </div>
                   </div>
                   <p class="card-text text-secondary fs-6 m-0"><i class="bi bi-geo-alt"></i> ${product.gudang}</p>
-                  <div class="d-flex justify-content-between">
-                    <a href="${product.detailUrl}" class="btn btn-sm btn-success m-0 ps-3 pe-3">Buy Now</a>
+                  <div class="">
                     <form action="/share-whatsapp" method="post">
                       <input type="hidden" name="id" value="${product.id}" />
                       <input type="hidden" name="imageUrl" value="${product.imageUrl}" />
@@ -250,9 +252,11 @@
                       <input type="hidden" name="price" value="${product.price}" />
                       <input type="hidden" name="subPrice" value="${product.subPrice}" />
                       <input type="hidden" name="discount" value="${product.discount}" />
-                      <input type="hidden" name="detailUrl" value="${product.detailUrl}" />
+                      <input type="hidden" name="color1" value="${ product.color && product.color.length > 0 ? product.color[0] : '' }" />
+                      <input type="hidden" name="color2" value="${ product.color && product.color.length > 0 ? product.color[1] : '' }" />
+                      <input type="hidden" name="color3" value="${ product.color && product.color.length > 0 ? product.color[2] : '' }" />
                       <button type="submit" class="btn btn-sm btn-success m-0 ps-3 pe-3">
-                        <i class="bi bi-whatsapp"></i>
+                       Buy Now <i class="bi bi-whatsapp"></i>
                       </button>
                     </form>
                   </div>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="google" content="notranslate" />
+    <meta name="description" content="Kami Menjual Kaos Untuk Para Fans Dari Kaos Anime , Kaos Drakor, Kaos Hewan Peliharaan, dan lain lain masih banyak" />
+    <meta name="keywords" content="<%= product.category %>" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="<%= product.name %>" />
+    <meta property="og:description" content="Jual Kaos Pengemar Atau Fans tertentu" />
+    <meta property="og:image" content="<%= product.imageUrl %>" />
+    <meta property="og:url" content="https://fanshub.gumelar.site" />
+    <!-- <link rel="stylesheet" href="./stylesheets/style.css" /> -->
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="icon" type="image/png" sizes="128x128 " href="./images/logo1.png" />
+    <style>
+      #contentList {
+        display: none;
+      }
+
+      .content-body {
+        max-width: 560px;
+      }
+      main {
+        min-height: 100vh;
+      }
+    </style>
+    <title><%= product.name %></title>
+  </head>
+  <body class="bg-light">
+    <div class="d-flex justify-content-center">
+      <div class="content-body">
+        <nav class="navbar navbar-light bg-seconndary shadow mt-0">
+          <div class="container-fluid text-center">
+            <span class="navbar-brand fw-bold mb-0 ms-2 h1"> Fans<span class="navbar-brand text-success">hub</span> </span>
+          </div>
+        </nav>
+
+        <main>
+          <!-- PRODUCTS ALL & FILTER -->
+          <% function angkaFormat(angka) { return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); } %>
+          <section>
+            <div class="container mt-4 mb-4">
+              <div class="text-center">
+                <h3 class="fw-bold fs-4">Terimakasih Telah Berkunjung!</h3>
+                <p>Untuk membeli silahkan klik <span class="text-primary">Buy Now</span> akan di arahkan ke Whatsapp. Selanjutnya Silahkan isi form untuk melakukan pembelian terimakasih!</p>
+              </div>
+              <div class="row" id="product-list">
+                <div class="col m-0 p-0">
+                  <div class="card m-3 border-1 border-dark shadow">
+                    <img src="<%= product.imageUrl %>" alt="<%= product.name %>" class="card-img-top" />
+                    <div class="card-body m-0">
+                      <h5 class="card-title fs-6 m-0"><%= product.name %></h5>
+                      <div class="card-text m-0">
+                        <div class="d-flex justify-content-between m-0 p-0">
+                          <div class="m-0">
+                            <del class="m-0">Rp<%=angkaFormat(product.price)%></del>
+                            <div class="text-success m-0 fw-bold">Rp<%= angkaFormat(product.subPrice) %></div>
+                          </div>
+                          <div class="m-0">
+                            <div class="bg-danger text-white divs-1 pe-1"><%= product.discount %>% Off</div>
+                            <div><i class="bi bi-star-fill text-warning"></i><%= product.rating %></div>
+                          </div>
+                        </div>
+                      </div>
+                      <p class="card-text text-secondary fs-6 m-0"><i class="bi bi-geo-alt"></i><%= product.gudang %></p>
+                      <div class="">
+                        <!-- <a href="" class="btn btn-sm btn-success m-0 ps-3 pe-3">Buy Now</a> -->
+                        <form action="/share-whatsapp" method="post">
+                          <input type="hidden" name="id" value="<%= product.id %>" />
+                          <input type="hidden" name="imageUrl" value="<%= product.imageUrl %>" />
+                          <input type="hidden" name="name" value="<%= product.name %>" />
+                          <input type="hidden" name="price" value="<%= product.price %>" />
+                          <input type="hidden" name="subPrice" value="<%=   product.subPrice %>" />
+                          <input type="hidden" name="discount" value="<%= product.discount %>" />
+                          <input type="hidden" name="color1" value="<%= product.color && product.color.length > 0 ? product.color[0] : '' %>" />
+                          <input type="hidden" name="color2" value="<%= product.color && product.color.length > 0 ? product.color[1] : '' %>" />
+                          <input type="hidden" name="color3" value="<%= product.color && product.color.length > 0 ? product.color[2] : '' %>" />
+                          <button type="submit" class="btn btn-success m-0 ps-3 pe-3">Buy Now <i class="bi bi-whatsapp"></i></button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="container mt-4 mb-4">
+              <div class="card border-1 border-dark shadow">
+                <div class="card-body">
+                  <div id="toggleButton" class="d-flex justify-content-between">
+                    <P class="fw-bold">Kenapa Harus Beli Product Ini? </P>
+                    <div><i class="bi bi-chevron-down text-dark fs-3 text-success"></i></div>
+                  </div>
+                  <div id="contentList" class="list-group mt-3">
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-check-circle-fill text-success me-2"></i>
+                      <span>Desain yang sangat simpel dan elegan, cocok untuk berbagai kesempatan.</span>
+                    </div>
+                    <div class="d-flex align-items-center mt-2">
+                      <i class="bi bi-check-circle-fill text-success me-2"></i>
+                      <span>Bahan kaos premium dari katun combat 24s, tebal, nyaman, dan tidak panas, serta mampu menyerap keringat dengan baik.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+        <footer class="bg-dark d-flex justify-content-center align-items-center py-3 mt-3">
+          <p class="text-secondary mb-0">&copy; <span id="current-year"></span> <a href="https://fanshub.gumelar.site">fanshub</a> All rights reserved.</p>
+        </footer>
+      </div>
+    </div>
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script>
+      const currentYearElement = document.getElementById('current-year');
+      const currentYear = new Date().getFullYear();
+      currentYearElement.textContent = currentYear;
+
+      document.getElementById('toggleButton').addEventListener('click', function () {
+        const contentList = document.getElementById('contentList');
+        const icon = this.querySelector('i'); // Ambil elemen <i> di dalam tombol
+        if (contentList.style.display === 'none' || contentList.style.display === '') {
+          contentList.style.display = 'block'; // Tampilkan contentList
+          icon.classList.remove('bi-chevron-down'); // Hapus ikon chevron down
+          icon.classList.add('bi-chevron-up'); // Tambahkan ikon chevron up
+        } else {
+          contentList.style.display = 'none'; // Sembunyikan contentList
+          icon.classList.remove('bi-chevron-up'); // Hapus ikon chevron up
+          icon.classList.add('bi-chevron-down'); // Tambahkan ikon chevron down
+        }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </body>
+</html>
