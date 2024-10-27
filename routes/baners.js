@@ -20,7 +20,7 @@ router.post(
   ]),
   async function (req, res) {
     try {
-      const { banerName, banerDetaileUrl, color1, color2, color3, banerMetsos, banerPrice, banerSubPrice } = req.body;
+      const { banerName, banerDetaileUrl, color1, color2, color3, banerMetsos, banerPrice, banerSubPrice, banerColorBg } = req.body;
       const file1 = req.files.banerImg1[0];
       const file2 = req.files.banerImg2[0];
       if (!file1 || !file2) {
@@ -58,6 +58,7 @@ router.post(
         banerMetsos,
         banerPrice,
         banerSubPrice,
+        banerColorBg,
       });
 
       res.status(201).json('success add baners fanshub ');
@@ -87,7 +88,7 @@ router.post(
   async function (req, res) {
     try {
       const { id } = req.params;
-      const { banerName, banerDetaileUrl, color1, color2, color3, banerMetsos, banerPrice, banerSubPrice } = req.body;
+      const { banerName, banerDetaileUrl, color1, color2, color3, banerMetsos, banerPrice, banerSubPrice, banerColorBg } = req.body;
       const file1 = req.files.banerImg1;
       const file2 = req.files.banerImg2;
 
@@ -132,6 +133,7 @@ router.post(
         banerMetsos,
         banerPrice,
         banerSubPrice,
+        banerColorBg,
       });
 
       res.status(200).json('success update baners fanshub ');
@@ -216,7 +218,7 @@ Harga Normal: *Rp*.*${formatAngka(req.body.banerPrice)}*
 Diskon: *${req.body.banerDiscount}%*
 Harga setelah diskon: *Rp${formatAngka(req.body.banerSubPrice)}*
 
-Spesifikasi Produk :
+*Spesifikasi Produk :*
 - Pola : Reguler Fit
 - Model : O neck short sleeve
 - Kain : 100% cotton combed 24s (Tebal)
@@ -224,8 +226,8 @@ Spesifikasi Produk :
 - Bahan : Halus, Adem, Menyerap Keringat
 - Sablon : Digital High Quality
 
-Pilihan warna Kaos:
-${colorsValue.map((color) => `-${color}`).join('\n')}
+*Pilihan warna Kaos:*
+${colorsValue.map((color) => `- ${color}`).join('\n')}
 
 *SILAHKAN ISI FORM DIBAWAH INI UNTUK MELAKUKAN PEMESANAN ! :*
 

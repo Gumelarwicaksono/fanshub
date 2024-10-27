@@ -1,0 +1,184 @@
+<div class="container mt-3">
+  <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators d-flex justify-content-start ms-5 mb-1">
+      <% baners.forEach((item, index) => { %>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="<%= index %>" class="rounded-cs-50 <%= index === 0 ? 'active' : '' %>"></button>
+      <% }); %>
+    </div>
+    <div class="carousel-inner rounded-custom">
+      <% baners.forEach((item, index) => { %>
+        <div class="carousel-item <%= index === 0 ? 'active' : '' %> position-relative" >
+          <img src="<%= item.banerImg %>" id="baner-klik" class="d-block w-100 rounded-custom" alt="fanshub baner" />
+          <div class="carousel-caption d-flex flex-column align-items-center justify-content-center position-absolute top-0 bottom-0 start-0 w-100 h-100">
+            <div class="overlay d-flex justify-content-around w-100 h-100">
+              <div class="text-white h-100">
+                <p class="position-absolute nm-prod d-flex flex-column">Rp<%= item.banerPrice %><del class="text-secondary delete">Rp<%= item.banerSubPrice %></del></p>
+                <form action="/api/share-banerwa" method="post">
+                  <input type="hidden" name="id" value="<%= item.id %>" />
+                  <input type="hidden" name="banerName" value="<%= item.banerName %>" />
+                  <input type="hidden" name="banerImgUrl" value="<%= item.banerImgUrl %>" />
+                  <input type="hidden" name="banerPrice" value="<%= item.banerPrice %>" />
+                  <input type="hidden" name="banerDiscount" value="<%= item.banerDiscount %>" />
+                  <input type="hidden" name="banerSubPrice" value="<%=   item.banerSubPrice %>" />
+                  <input type="hidden" name="banerDetaileUrl" value="<%= item.banerDetaileUrl %>" />
+                  <button type="submit" class=" btn btn-sm btn-success  position-absolute rounded-pill border-0 btn-buy ">
+                  Beli Sekarang  <i class="bi bi-cart text-warning fw-bold "></i>
+                  </button>
+                </form>
+              </div>
+              <div class="h-100">
+                <p class="position-absolute fw-bold dsc-prod"><%= item.banerDiscount %>%</p>
+              </div>
+              <img class="position-absolute img-prod" src="<%= item.banerImgUrl %>" alt="" />
+            </div>
+          </div>
+          <span class="overlay d-flex justify-content-center w-100 bottom-0 mt-5">
+            <p class="text-dark position-absolute tx-tautan">@<%= item.banerDetaileUrl %></p>
+          </span>
+        </div>
+      </button>
+      <% }); %>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon d-none d-lg-block d-md-block" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+      <span class="carousel-control-next-icon d-none d-lg-block d-md-block" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+  </div>
+</div>
+
+
+
+
+
+
+======= BANER STYLE==============
+
+.dsc-prod {
+  font-size: 4.7rem;
+  left: 49%;
+  bottom: 43%;
+  color: black !important;
+}
+.nm-prod {
+  font-size: 1.9rem !important;
+  bottom: 48%;
+  left: 11%;
+  padding: 6px;
+  color: #011802 !important;
+  font-weight: bold;
+}
+.btn-buy {
+  font-size: 1.3rem !important;
+  bottom: 34%;
+  left: 9%;
+  font-weight: bold;
+}
+.img-prod {
+  right: 4rem !important;
+  width: 300px !important;
+  top: 0;
+}
+
+.tx-tautan {
+  bottom: 12%;
+  left: 46%;
+}
+/* Tampilan Tablet (Lebar layar antara 768px dan 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .dsc-prod {
+    font-size: 4.7rem;
+    left: 49%;
+    bottom: 40%;
+  }
+  .nm-prod {
+    font-size: 0.9rem !important;
+    bottom: 49%;
+    left: 11%;
+  }
+  .btn-buy {
+    font-size: 1.3rem !important;
+    bottom: 34%;
+    left: 9%;
+  }
+  .delete {
+    font-size: 0.7rem;
+  }
+  .img-prod {
+    right: 3rem;
+    width: 200px;
+    top: 0;
+  }
+
+  .tx-tautan {
+    bottom: 12%;
+    left: 46%;
+  }
+}
+/* Tampilan mobile 1 (Lebar layar antara 768px dan 991px) */
+@media (min-width: 426px) and (max-width: 768px) {
+  .dsc-prod {
+    font-size: 2.1rem;
+    left: 49%;
+    bottom: 43%;
+    color: black !important;
+  }
+  .nm-prod {
+    font-size: 0.8rem !important;
+    bottom: 44% !important;
+    left: 9% !important;
+  }
+  .btn-buy {
+    font-size: 0.7rem !important;
+    bottom: 38%;
+    left: 9%;
+  }
+  .delete {
+    font-size: 0.5rem;
+  }
+  .img-prod {
+    right: 3rem !important;
+    width: 110px !important;
+    top: 10%;
+  }
+
+  .tx-tautan {
+    font-size: 0.5rem;
+    bottom: 18% !important;
+    left: 46%;
+  }
+}
+/* Tampilan mobile 2 (Lebar layar antara 768px dan 991px) */
+@media (min-width: 350px) and (max-width: 426px) {
+  .dsc-prod {
+    font-size: 2.1rem;
+    left: 49%;
+    bottom: 43%;
+  }
+  .nm-prod {
+    font-size: 0.7rem !important;
+    bottom: 45%;
+    left: 9% !important;
+  }
+  .btn-buy {
+    font-size: 0.7rem !important;
+    bottom: 34%;
+    left: 9%;
+  }
+  .delete {
+    font-size: 0.5rem;
+  }
+  .img-prod {
+    right: 1.5rem;
+    width: 100px;
+    top: 0;
+  }
+
+  .tx-tautan {
+    font-size: 0.5rem;
+    bottom: 20%;
+    left: 46%;
+  }
+}

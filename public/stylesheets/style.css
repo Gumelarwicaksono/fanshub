@@ -10,7 +10,7 @@
 }
 
 main {
-  min-height: 70vh !important;
+  min-height: 100vh !important;
 }
 .btn-success {
   background-color: #4caf50 !important;
@@ -22,7 +22,7 @@ main {
   border-color: #4caf50 !important;
 }
 .rounded-custom {
-  border-radius: 10px;
+  border-radius: 15px;
 }
 .rounded-cs-50 {
   width: 10px !important;
@@ -54,131 +54,24 @@ footer {
   color: white !important;
 }
 
-/* ======= BANER STYLE============== */
-
-.dsc-prod {
-  font-size: 4.7rem;
-  left: 49%;
-  bottom: 43%;
-  color: black !important;
+.slide-content {
+  display: flex !important;
+  align-items: center !important; /* Vertically center the content */
+  justify-content: space-between !important; /* Space between content and image */
+  padding: 0 20px !important; /* Jarak dari samping kanan dan kiri */
 }
-.nm-prod {
-  font-size: 1.9rem !important;
-  bottom: 48%;
-  left: 11%;
-  padding: 6px;
-  color: #011802 !important;
-  font-weight: bold;
+.img-prod1 {
+  max-width: 350px !important; /* Pastikan gambar responsif */
+  max-height: 350px !important; /* Pastikan gambar responsif */
 }
-.btn-buy {
-  font-size: 1.3rem !important;
-  bottom: 34%;
-  left: 9%;
-  font-weight: bold;
-}
-.img-prod {
-  right: 4rem;
-  width: 300px;
-  top: 0;
-}
-
-.tx-tautan {
-  bottom: 12%;
-  left: 46%;
-}
-/* Tampilan Tablet (Lebar layar antara 768px dan 991px) */
-@media (min-width: 768px) and (max-width: 991px) {
-  .dsc-prod {
-    font-size: 4.7rem;
-    left: 49%;
-    bottom: 40%;
-  }
-  .nm-prod {
-    font-size: 0.9rem !important;
-    bottom: 49%;
-    left: 11%;
-  }
-  .btn-buy {
-    font-size: 1.3rem !important;
-    bottom: 34%;
-    left: 9%;
-  }
-  .delete {
-    font-size: 0.7rem;
-  }
-  .img-prod {
-    right: 3rem;
-    width: 200px;
-    top: 0;
-  }
-
-  .tx-tautan {
-    bottom: 12%;
-    left: 46%;
+@media (min-width: 768px) {
+  .slide-content {
+    margin: 0 100px !important;
   }
 }
-/* Tampilan mobile 1 (Lebar layar antara 768px dan 991px) */
-@media (min-width: 426px) and (max-width: 768px) {
-  .dsc-prod {
-    font-size: 2.1rem;
-    left: 49%;
-    bottom: 43%;
-    color: black !important;
-  }
-  .nm-prod {
-    font-size: 0.8rem !important;
-    bottom: 44% !important;
-    left: 9% !important;
-  }
-  .btn-buy {
-    font-size: 0.7rem !important;
-    bottom: 38%;
-    left: 9%;
-  }
-  .delete {
-    font-size: 0.5rem;
-  }
-  .img-prod {
-    right: 3rem !important;
-    width: 110px !important;
-    top: 10%;
-  }
-
-  .tx-tautan {
-    font-size: 0.5rem;
-    bottom: 18% !important;
-    left: 46%;
-  }
-}
-/* Tampilan mobile 2 (Lebar layar antara 768px dan 991px) */
-@media (min-width: 350px) and (max-width: 426px) {
-  .dsc-prod {
-    font-size: 2.1rem;
-    left: 49%;
-    bottom: 43%;
-  }
-  .nm-prod {
-    font-size: 0.7rem !important;
-    bottom: 45%;
-    left: 9% !important;
-  }
-  .btn-buy {
-    font-size: 0.7rem !important;
-    bottom: 34%;
-    left: 9%;
-  }
-  .delete {
-    font-size: 0.5rem;
-  }
-  .img-prod {
-    right: 1.5rem;
-    width: 100px;
-    top: 0;
-  }
-
-  .tx-tautan {
-    font-size: 0.5rem;
-    bottom: 20%;
-    left: 46%;
+@media (min-width: 350px) and (max-width: 560px) {
+  .img-prod1 {
+    max-width: 150px !important; /* Pastikan gambar responsif */
+    max-height: 150px !important; /* Pastikan gambar responsif */
   }
 }

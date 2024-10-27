@@ -469,13 +469,13 @@ router.post('/share-whatsapp', async (req, res) => {
     const caption = `
 🔥 KHUSUS BUAT KAMU!🔥
 
-✨ ${req.body.name} ✨
+✨ *${req.body.name}* ✨
 
 Harga :*Rp*.*${formatAngka(req.body.price)}*
 Diskon : *${req.body.discount}%*
 setelah diskon: *Rp${formatAngka(req.body.subPrice)}*
 
-Spesifikasi Produk :
+*Spesifikasi Produk :*
 - Pola : Reguler Fit
 - Model : O neck short sleeve
 - Kain : 100% cotton combed 24s (Tebal)
@@ -483,10 +483,10 @@ Spesifikasi Produk :
 - Bahan : Halus, Adem, Menyerap Keringat
 - Sablon : Digital High Quality
 
-Ukuran : [ S, M, L, XL  ]
+*Ukuran* : [ S, M, L, XL  ]
 
-Pilihan warna Kaos:
- ${colorsValue.map((color) => `-${color}`).join('\n')}
+*Pilihan warna Kaos:*
+ ${colorsValue.map((color) => `- ${color}`).join('\n')}
 
 *SILAHKAN ISI FORM DIBAWAH INI UNTUK MELAKUKAN PEMESANAN ! :*
  id : ${req.body.id}
@@ -496,7 +496,7 @@ Pilihan warna Kaos:
  Alamat lengkap :
  No HP / wa  :
  
- ➡️product : https://fanshub.gumelar.site/products/detaile/${req.body.id}
+ ➡️product : https://fanshub.gumelar.site/products/detail/${req.body.id}
  ➡️halaman web katalog : https://fanshub.gumelar.site 
  ➡️imageUrl : ${imageUrl}
 
