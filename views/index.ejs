@@ -47,7 +47,7 @@
     <% function angkaFormat(angka) { return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); } %>
     <nav class="navbar navbar-light bg-seconndary shadow mt-0">
       <div class="container-fluid">
-        <span class="navbar-brand fw-bold mb-0 ms-2 h1"> Fans<span class="navbar-brand text-success">hub</span> </span>
+        <a href="/" class="navbar-brand fw-bold mb-0 ms-2 h1"> Fans<span class="navbar-brand text-success">hub</span> </a>
       </div>
     </nav>
     <header>
@@ -59,8 +59,9 @@
             <% }); %>
           </div>
           <div class="carousel-inner rounded-custom">
+            <div id="banersprod" data-baner="<%= JSON.stringify(baners) %>"></div>
             <% baners.forEach((item, index) => { %>
-            <div class="carousel-item <%= index === 0 ? 'active' : '' %>" style="<%= item.banerColorBg %>">
+            <div class="carousel-item <%= index === 0 ? 'active' : '' %>" id="carousel-item-<%= index %>">
               <div class="slide-content">
                 <div>
                   <h5 class="m-0 p-0"><%= item.banerName%></h5>
@@ -76,6 +77,10 @@
                     <input type="hidden" name="banerDiscount" value="<%= item.banerDiscount %>" />
                     <input type="hidden" name="banerSubPrice" value="<%=   item.banerSubPrice %>" />
                     <input type="hidden" name="banerDetaileUrl" value="<%= item.banerDetaileUrl %>" />
+                    <input type="hidden" name="color1" value="<%= item.color && item.color.length > 0 ? item.color[0] : '' %>" />
+                    <input type="hidden" name="color2" value="<%= item.color && item.color.length > 0 ? item.color[1] : '' %>" />
+                    <input type="hidden" name="color3" value="<%= item.color && item.color.length > 0 ? item.color[2] : '' %>" />
+
                     <button type="submit" class="btn btn-success">Buy Now <i class="bi bi-whatsapp"></i></button>
                   </form>
                 </div>
@@ -170,11 +175,25 @@
       //
       //GET DATA
       const products = JSON.parse(document.getElementById('myDiv').getAttribute('data-products'));
+      const baners = JSON.parse(document.getElementById('banersprod').getAttribute('data-baner'));
 
       //DATE UPDATE
       const currentYearElement = document.getElementById('current-year');
       const currentYear = new Date().getFullYear();
       currentYearElement.textContent = currentYear;
+
+      baners.forEach((item, index) => {
+        const carouselItem = document.getElementById(`carousel-item-${index}`);
+        console.log(carouselItem); // Cek apakah elemen ditemukan
+        if (carouselItem) {
+            console.log(`Setting background color for item ${index}: ${item.banerColorBg}`);
+            // Mengatur latar belakang dengan !important
+            carouselItem.style = item.banerColorBg;
+        } else {
+            console.error(`Element with ID carousel-item-${index} not found`);
+        }
+    });
+</script>
 
       //formating number
       function formatAngka(angka) {
