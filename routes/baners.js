@@ -11,66 +11,51 @@ function getValidColors(colors) {
   return colors.filter((color) => color !== undefined && color !== null && color !== '');
 }
 
-router.post(
-  '/baners',
-  authorize,
-  upload.fields([
-    { name: 'banerImg1', maxCount: 1 },
-    { name: 'banerImg2', maxCount: 1 },
-  ]),
-  async function (req, res) {
-    try {
-      const { banerName, banerDetaileUrl, color1, color2, color3, banerMetsos, banerPrice, banerSubPrice, banerColorBg } = req.body;
-      const file1 = req.files.banerImg1[0];
-      const file2 = req.files.banerImg2[0];
-      if (!file1 || !file2) {
-        return res.status(400).send('Tidak ada file yang diunggah.');
-      }
+router.post('/baners', authorize, upload.fields([{ name: 'banerImg2', maxCount: 1 }]), async function (req, res) {
+  try {
+    const { banerName, banerDetaileUrl, color1, color2, color3, banerPrice, banerSubPrice, banerColorBg } = req.body;
 
-      // Hitung diskon
-      const discount = Math.round(((banerPrice - banerSubPrice) / banerPrice) * 100);
-
-      // Upload gambar ke Firebase Storage (jika ada)
-      let imageUrl1 = '';
-      let imageUrl2 = '';
-      if (file1) {
-        const imageRef1 = dbsRef(storage, `images/${uuidv4()}-${file1.originalname}`);
-        await uploadBytes(imageRef1, file1.buffer);
-        imageUrl1 = await getDownloadURL(imageRef1);
-      }
-      if (file2) {
-        const imageRef2 = dbsRef(storage, `images/${uuidv4()}-${file2.originalname}`);
-        await uploadBytes(imageRef2, file2.buffer);
-        imageUrl2 = await getDownloadURL(imageRef2);
-      }
-
-      const colors = [color1, color2, color3];
-      const colorsValue = getValidColors(colors);
-      // Simpan produk ke Realtime Database
-      const newProductRef = push(ref(db, 'baners'));
-      await set(newProductRef, {
-        banerName,
-        banerDetaileUrl,
-        color: colorsValue,
-        banerDiscount: discount,
-        banerImg: imageUrl1,
-        banerImgUrl: imageUrl2,
-        banerMetsos,
-        banerPrice,
-        banerSubPrice,
-        banerColorBg,
-      });
-
-      res.status(201).json('success add baners fanshub ');
-    } catch (error) {
-      console.error(error);
-      res.status(500).send({
-        status: 'Terjadi kesalahan.',
-        message: error,
-      });
+    const file2 = req.files.banerImg2[0];
+    if (!file2) {
+      return res.status(400).send('Tidak ada file yang diunggah.');
     }
+
+    // Hitung diskon
+    const discount = Math.round(((banerPrice - banerSubPrice) / banerPrice) * 100);
+
+    // Upload gambar ke Firebase Storage (jika ada)
+
+    let imageUrl2 = '';
+    if (file2) {
+      const imageRef2 = dbsRef(storage, `images/${uuidv4()}-${file2.originalname}`);
+      await uploadBytes(imageRef2, file2.buffer);
+      imageUrl2 = await getDownloadURL(imageRef2);
+    }
+
+    const colors = [color1, color2, color3];
+    const colorsValue = getValidColors(colors);
+    // Simpan produk ke Realtime Database
+    const newProductRef = push(ref(db, 'baners'));
+    await set(newProductRef, {
+      banerName,
+      banerDetaileUrl,
+      color: colorsValue,
+      banerDiscount: discount,
+      banerImgUrl: imageUrl2,
+      banerPrice,
+      banerSubPrice,
+      banerColorBg,
+    });
+
+    res.status(201).json('success add baners fanshub ');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      status: 'Terjadi kesalahan.',
+      message: error,
+    });
   }
-);
+});
 
 //HALAMAN ADD PRODUCT
 router.get('/banersadd', authorize, (req, res) => {
@@ -78,71 +63,53 @@ router.get('/banersadd', authorize, (req, res) => {
 });
 
 //API EDIT PRODUCT
-router.post(
-  '/baners/e/:id',
-  authorize,
-  upload.fields([
-    { name: 'banerImg1', maxCount: 1 },
-    { name: 'banerImg2', maxCount: 1 },
-  ]),
-  async function (req, res) {
-    try {
-      const { id } = req.params;
-      const { banerName, banerDetaileUrl, color1, color2, color3, banerMetsos, banerPrice, banerSubPrice, banerColorBg } = req.body;
-      const file1 = req.files.banerImg1;
-      const file2 = req.files.banerImg2;
+router.post('/baners/e/:id', authorize, upload.fields([{ name: 'banerImg2', maxCount: 1 }]), async function (req, res) {
+  try {
+    const { id } = req.params;
+    const { banerName, banerDetaileUrl, color1, color2, color3, banerPrice, banerSubPrice, banerColorBg } = req.body;
 
-      // Cek baners jika belum ada (menggunakan Realtime Database)
-      const productRef = ref(db, `baners/${id}`);
-      const productSnapshot = await get(productRef);
-      if (!productSnapshot.exists()) {
-        return res.status(404).send('Produk tidak ditemukan.');
-      }
-      // Hitung diskon
-      const discount = Math.round(((banerPrice - banerSubPrice) / banerPrice) * 100);
+    const file2 = req.files.banerImg2;
 
-      // Upload gambar ke Firebase Storage (jika ada)
-      let imageUrl1 = '';
-      let imageUrl2 = '';
-      if (file1) {
-        const imageRef1 = dbsRef(storage, `images/${uuidv4()}-${file1.originalname}`);
-        await uploadBytes(imageRef1, file1.buffer);
-        imageUrl1 = await getDownloadURL(imageRef1);
-      } else {
-        imageUrl1 = productSnapshot.val().banerImg;
-      }
-
-      if (file2) {
-        const imageRef2 = dbsRef(storage, `images/${uuidv4()}-${file2.originalname}`);
-        await uploadBytes(imageRef2, file2.buffer);
-        imageUrl2 = await getDownloadURL(imageRef2);
-      } else {
-        imageUrl2 = productSnapshot.val().banerImgUrl;
-      }
-
-      const colors = [color1, color2, color3];
-      const colorsValue = getValidColors(colors);
-      // Update produk ke Realtime Database
-      await update(ref(db, `baners/${id}`), {
-        banerName,
-        banerDetaileUrl,
-        colors: colorsValue,
-        banerDiscount: discount,
-        banerImg: imageUrl1,
-        banerImgUrl: imageUrl2,
-        banerMetsos,
-        banerPrice,
-        banerSubPrice,
-        banerColorBg,
-      });
-
-      res.status(200).json('success update baners fanshub ');
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('Terjadi kesalahan.');
+    // Cek baners jika belum ada (menggunakan Realtime Database)
+    const productRef = ref(db, `baners/${id}`);
+    const productSnapshot = await get(productRef);
+    if (!productSnapshot.exists()) {
+      return res.status(404).send('Produk tidak ditemukan.');
     }
+    // Hitung diskon
+    const discount = Math.round(((banerPrice - banerSubPrice) / banerPrice) * 100);
+
+    // Upload gambar ke Firebase Storage (jika ada)
+
+    let imageUrl2 = '';
+    if (file2) {
+      const imageRef2 = dbsRef(storage, `images/${uuidv4()}-${file2.originalname}`);
+      await uploadBytes(imageRef2, file2.buffer);
+      imageUrl2 = await getDownloadURL(imageRef2);
+    } else {
+      imageUrl2 = productSnapshot.val().banerImgUrl;
+    }
+
+    const colors = [color1, color2, color3];
+    const colorsValue = getValidColors(colors);
+    // Update produk ke Realtime Database
+    await update(ref(db, `baners/${id}`), {
+      banerName,
+      banerDetaileUrl,
+      colors: colorsValue,
+      banerDiscount: discount,
+      banerImgUrl: imageUrl2,
+      banerPrice,
+      banerSubPrice,
+      banerColorBg,
+    });
+
+    res.status(200).json('success update baners fanshub ');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Terjadi kesalahan.');
   }
-);
+});
 //HALAMAN EDIT PRODUCT
 router.get('/baners/edit/:id', authorize, async function (req, res) {
   try {
@@ -219,13 +186,7 @@ Harga Normal: *Rp*.*${formatAngka(req.body.banerPrice)}*
 Diskon: *${req.body.banerDiscount}%*
 Harga setelah diskon: *Rp${formatAngka(req.body.banerSubPrice)}*
 
-*Spesifikasi Produk :*
-- Pola : Reguler Fit
-- Model : O neck short sleeve
-- Kain : 100% cotton combed 24s (Tebal)
-- Gender : Unisex (Pria dan Wanita)
-- Bahan : Halus, Adem, Menyerap Keringat
-- Sablon : Digital High Quality
+*Ukuran* : [S, M, L, XL]
 
 *Pilihan warna Kaos:*
 ${colorsValue.map((color) => `- ${color}`).join('\n')}

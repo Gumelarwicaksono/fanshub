@@ -29,6 +29,9 @@
         max-width: 350px !important; /* Pastikan gambar responsif */
         max-height: 350px !important; /* Pastikan gambar responsif */
       }
+      .point {
+        cursor: pointer;
+      }
       @media (min-width: 768px) {
         .slide-content {
           margin: 0 100px !important;
@@ -45,6 +48,7 @@
   </head>
   <body class="bg-light">
     <% function angkaFormat(angka) { return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); } %>
+
     <nav class="navbar navbar-light bg-seconndary shadow mt-0">
       <div class="container-fluid">
         <a href="/" class="navbar-brand fw-bold mb-0 ms-2 h1"> Fans<span class="navbar-brand text-success">hub</span> </a>
@@ -124,7 +128,7 @@
             <% if (products.length === 0) { %>
             <p>No categories available</p>
             <% } else { %> <% products.forEach((product) => { %>
-            <div class="col-6 col-md-3 col-lg-2 m-0 p-0">
+            <div onclick="toDtl('/products/detail/<%=product.id %>')" class="col-6 col-md-3 col-lg-2 m-0 p-0 point">
               <div class="card m-1 h-min">
                 <img src="<%= product.imageUrl %>" alt="<%= product.name %>" class="card-img-top" />
                 <div class="card-body m-0">
@@ -193,6 +197,10 @@
         }
       });
 
+      function toDtl(params) {
+        window.location.href = params;
+      }
+
       //formating number
       function formatAngka(angka) {
         return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -213,7 +221,7 @@
         products.forEach((product) => {
           if (categoryName === '' || categoryName === 'All') {
             content.innerHTML += `
-            <div class="col-6 col-md-3 col-lg-2 m-0 p-0">
+            <div onclick="toDtl('/products/detail/${product.id}')" class="col-6 col-md-3 col-lg-2 m-0 p-0 point">
               <div class="card m-1 h-min">
                 <img src="${product.imageUrl}" alt="${product.name}" class="card-img-top" />
                 <div class="card-body m-0">
@@ -254,7 +262,7 @@
           }
           if (product.category.toLowerCase() === categoryName.toLowerCase()) {
             content.innerHTML += `
-            <div class="col-6 col-md-3 col-lg-2 m-0 p-0">
+            <div onclick="toDtl('/products/detail/${product.id}')" class="col-6 col-md-3 col-lg-2 m-0 p-0 point">
               <div class="card m-1 h-min">
                 <img src="${product.imageUrl}" alt="${product.name}" class="card-img-top" />
                 <div class="card-body m-0">

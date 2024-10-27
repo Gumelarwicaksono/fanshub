@@ -475,14 +475,6 @@ Harga :*Rp*.*${formatAngka(req.body.price)}*
 Diskon : *${req.body.discount}%*
 setelah diskon: *Rp${formatAngka(req.body.subPrice)}*
 
-*Spesifikasi Produk :*
-- Pola : Reguler Fit
-- Model : O neck short sleeve
-- Kain : 100% cotton combed 24s (Tebal)
-- Gender : Unisex (Pria dan Wanita)
-- Bahan : Halus, Adem, Menyerap Keringat
-- Sablon : Digital High Quality
-
 *Ukuran* : [ S, M, L, XL  ]
 
 *Pilihan warna Kaos:*
