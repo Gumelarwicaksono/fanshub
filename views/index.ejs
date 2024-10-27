@@ -8,8 +8,8 @@
     <meta name="description" content="Kami Menjual Kaos Untuk Para Fans Dari Kaos Anime , Kaos Drakor, Kaos Hewan Peliharaan, dan lain lain masih banyak" />
     <meta name="keywords" content="One Pice, Drakor , Goblin , Kucing, Burung, Kata Bijak, Islam, Motivasi" />
     <meta name="robots" content="index, follow" />
-    <meta property="og:title" content="Katalog Baju berbagai Fans" />
-    <meta property="og:description" content="Jual Kaos Pengemar Atau Fans Sablon" />
+    <meta property="og:title" content="Katalog Kaos Fanshub" />
+    <meta property="og:description" content="Kaos untuk Para Penggemar dan Fans." />
     <meta property="og:image" content="./images/prod1.png" />
     <meta property="og:url" content="https://fanshub.gumelar.site" />
     <link rel="stylesheet" href="./stylesheets/style.css" />
@@ -80,7 +80,6 @@
                     <input type="hidden" name="color1" value="<%= item.color && item.color.length > 0 ? item.color[0] : '' %>" />
                     <input type="hidden" name="color2" value="<%= item.color && item.color.length > 0 ? item.color[1] : '' %>" />
                     <input type="hidden" name="color3" value="<%= item.color && item.color.length > 0 ? item.color[2] : '' %>" />
-
                     <button type="submit" class="btn btn-success">Buy Now <i class="bi bi-whatsapp"></i></button>
                   </form>
                 </div>
@@ -186,14 +185,13 @@
         const carouselItem = document.getElementById(`carousel-item-${index}`);
         console.log(carouselItem); // Cek apakah elemen ditemukan
         if (carouselItem) {
-            console.log(`Setting background color for item ${index}: ${item.banerColorBg}`);
-            // Mengatur latar belakang dengan !important
-            carouselItem.style = item.banerColorBg;
+          console.log(`Setting background color for item ${index}: ${item.banerColorBg}`);
+          // Mengatur latar belakang dengan !important
+          carouselItem.style = item.banerColorBg;
         } else {
-            console.error(`Element with ID carousel-item-${index} not found`);
+          console.error(`Element with ID carousel-item-${index} not found`);
         }
-    });
-</script>
+      });
 
       //formating number
       function formatAngka(angka) {
