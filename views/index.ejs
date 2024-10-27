@@ -77,9 +77,9 @@
                     <input type="hidden" name="banerDiscount" value="<%= item.banerDiscount %>" />
                     <input type="hidden" name="banerSubPrice" value="<%=   item.banerSubPrice %>" />
                     <input type="hidden" name="banerDetaileUrl" value="<%= item.banerDetaileUrl %>" />
-                    <input type="hidden" name="color1" value="<%= item.color && item.color.length > 0 ? item.color[0] : '' %>" />
-                    <input type="hidden" name="color2" value="<%= item.color && item.color.length > 0 ? item.color[1] : '' %>" />
-                    <input type="hidden" name="color3" value="<%= item.color && item.color.length > 0 ? item.color[2] : '' %>" />
+                    <input type="hidden" name="color1" value="<%= item.colors && item.colors.length > 0 ? item.colors[0] : '' %>" />
+                    <input type="hidden" name="color2" value="<%= item.colors && item.colors.length > 0 ? item.colors[1] : '' %>" />
+                    <input type="hidden" name="color3" value="<%= item.colors && item.colors.length > 0 ? item.colors[2] : '' %>" />
                     <button type="submit" class="btn btn-success">Buy Now <i class="bi bi-whatsapp"></i></button>
                   </form>
                 </div>
