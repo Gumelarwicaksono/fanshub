@@ -69,7 +69,7 @@ footer {
     margin: 0 100px !important;
   }
 }
-@media (min-width: 350px) and (max-width: 560px) {
+@media (min-width: 320px) and (max-width: 560px) {
   .img-prod1 {
     max-width: 150px !important; /* Pastikan gambar responsif */
     max-height: 150px !important; /* Pastikan gambar responsif */
