@@ -53,25 +53,3 @@ footer {
   background-color: #69db6d !important;
   color: white !important;
 }
-
-.slide-content {
-  display: flex !important;
-  align-items: center !important; /* Vertically center the content */
-  justify-content: space-between !important; /* Space between content and image */
-  padding: 0 20px !important; /* Jarak dari samping kanan dan kiri */
-}
-.img-prod1 {
-  max-width: 350px !important; /* Pastikan gambar responsif */
-  max-height: 350px !important; /* Pastikan gambar responsif */
-}
-@media (min-width: 768px) {
-  .slide-content {
-    margin: 0 100px !important;
-  }
-}
-@media (min-width: 320px) and (max-width: 560px) {
-  .img-prod1 {
-    max-width: 150px !important; /* Pastikan gambar responsif */
-    max-height: 150px !important; /* Pastikan gambar responsif */
-  }
-}
