@@ -40,7 +40,7 @@ router.post('/baners', authorize, upload.fields([{ name: 'banerImg2', maxCount: 
     await set(newProductRef, {
       banerName,
       banerDetaileUrl,
-      color: colorsValue,
+      colors: colorsValue,
       banerDiscount: discount,
       banerImgUrl: imageUrl2,
       banerPrice,
