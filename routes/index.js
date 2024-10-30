@@ -378,6 +378,109 @@ router.get('/addproducts', authorize, (req, res) => {
 });
 
 //API EDIT PRODUCT
+// router.post(
+//   '/products/e/:id',
+//   upload.fields([
+//     { name: 'image', maxCount: 1 },
+//     { name: 'image2', maxCount: 1 },
+//     { name: 'image3', maxCount: 1 },
+//   ]),
+//   async function (req, res) {
+//     try {
+//       const { id } = req.params;
+//       const { name, price, subPrice, category, color1, color2, color3, rating, terjual, gudang } = req.body;
+
+//       const file = req.files.image ? req.files.image[0] : null;
+//       const file2 = req.files.image2 ? req.files.image2[0] : null;
+//       const file3 = req.files.image3 ? req.files.image3[0] : null;
+
+//       // Cek produk jika belum ada (menggunakan Realtime Database)
+//       const productRef = ref(db, `products/${id}`);
+//       const productSnapshot = await get(productRef);
+//       if (!productSnapshot.exists()) {
+//         return res.status(404).send('Produk tidak ditemukan.');
+//       }
+
+//       // Cek dan update kategori jika belum ada (menggunakan Realtime Database)
+//       const categoryRef = ref(db, 'categories');
+//       const categorySnapshot = await get(categoryRef);
+
+//       const categoryName = category.toLowerCase(); // replace with the actual category name
+
+//       const categories = Object.values(categorySnapshot.val()); // convert object to array
+//       const existingCategory = categories.find((category) => category.name.toLowerCase() === categoryName);
+
+//       if (!existingCategory) {
+//         await push(categoryRef, { name: categoryName });
+//       }
+
+//       // Upload gambar ke Firebase Storage (jika ada)
+
+//       let imageUrl = '';
+
+//       if (file) {
+//         const imageRef = dbsRef(storage, `images/${uuidv4()}-${file.originalname}`);
+//         const metadata = {
+//           contentType: file.mimetype,
+//           customMetadata: {
+//             description: 'This is a products image',
+//           },
+//           contentDisposition: 'inline; filename="' + file.originalname + '"',
+//           cacheControl: 'public, max-age=31536000',
+//         };
+//         await uploadBytes(imageRef, file.buffer, metadata);
+//         imageUrl = await getDownloadURL(imageRef);
+//       }
+//       let imageUrl2 = '';
+//       if (file2) {
+//         const imageRef = dbsRef(storage, `images/${uuidv4()}-${file2.originalname}`);
+//         const metadata = {
+//           contentType: file2.mimetype,
+//           customMetadata: {
+//             description: 'This is a products image',
+//           },
+//           contentDisposition: 'inline; filename="' + file2.originalname + '"',
+//           cacheControl: 'public, max-age=31536000',
+//         };
+//         await uploadBytes(imageRef, file2.buffer, metadata);
+//         imageUrl2 = await getDownloadURL(imageRef);
+//       }
+//       let imageUrl3 = '';
+//       if (file3) {
+//         const imageRef = dbsRef(storage, `images/${uuidv4()}-${file3.originalname}`);
+//         const metadata = {
+//           contentType: file3.mimetype,
+//           customMetadata: {
+//             description: 'This is a products image',
+//           },
+//           contentDisposition: 'inline; filename="' + file3.originalname + '"',
+//           cacheControl: 'public, max-age=31536000',
+//         };
+//         await uploadBytes(imageRef, file3.buffer, metadata);
+//         imageUrl3 = await getDownloadURL(imageRef);
+//       }
+//       // Update produk ke Realtime Database
+//       await update(ref(db, `products/${id}`), {
+//         name,
+//         price,
+//         subPrice,
+//         category,
+//         color: getValidColors([color1, color2, color3]),
+//         imageUrl: getValidColors([imageUrl, imageUrl2, imageUrl3]),
+//         discount: Math.round(((price - subPrice) / price) * 100),
+//         rating,
+//         terjual,
+//         gudang,
+//       });
+
+//       res.status(200).json('success update product sablonika ');
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).send('Terjadi kesalahan.');
+//     }
+//   }
+// );
+
 router.post(
   '/products/e/:id',
   upload.fields([
@@ -394,31 +497,30 @@ router.post(
       const file2 = req.files.image2 ? req.files.image2[0] : null;
       const file3 = req.files.image3 ? req.files.image3[0] : null;
 
-      // Cek produk jika belum ada (menggunakan Realtime Database)
       const productRef = ref(db, `products/${id}`);
       const productSnapshot = await get(productRef);
       if (!productSnapshot.exists()) {
         return res.status(404).send('Produk tidak ditemukan.');
       }
 
-      // Cek dan update kategori jika belum ada (menggunakan Realtime Database)
+      const productData = productSnapshot.val();
+      const currentImages = productData.imageUrl; // Ambil URL gambar saat ini
+
+      // Cek dan update kategori jika belum ada
       const categoryRef = ref(db, 'categories');
       const categorySnapshot = await get(categoryRef);
-
-      const categoryName = category.toLowerCase(); // replace with the actual category name
-
-      const categories = Object.values(categorySnapshot.val()); // convert object to array
+      const categoryName = category.toLowerCase();
+      const categories = Object.values(categorySnapshot.val());
       const existingCategory = categories.find((category) => category.name.toLowerCase() === categoryName);
 
       if (!existingCategory) {
         await push(categoryRef, { name: categoryName });
       }
 
-      // Upload gambar ke Firebase Storage (jika ada)
+      // Fungsi untuk mengupload gambar
+      const uploadImage = async (file) => {
+        if (!file) return null;
 
-      let imageUrl = '';
-
-      if (file) {
         const imageRef = dbsRef(storage, `images/${uuidv4()}-${file.originalname}`);
         const metadata = {
           contentType: file.mimetype,
@@ -429,44 +531,35 @@ router.post(
           cacheControl: 'public, max-age=31536000',
         };
         await uploadBytes(imageRef, file.buffer, metadata);
-        imageUrl = await getDownloadURL(imageRef);
-      }
-      let imageUrl2 = '';
-      if (file2) {
-        const imageRef = dbsRef(storage, `images/${uuidv4()}-${file2.originalname}`);
-        const metadata = {
-          contentType: file2.mimetype,
-          customMetadata: {
-            description: 'This is a products image',
-          },
-          contentDisposition: 'inline; filename="' + file2.originalname + '"',
-          cacheControl: 'public, max-age=31536000',
-        };
-        await uploadBytes(imageRef, file2.buffer, metadata);
-        imageUrl2 = await getDownloadURL(imageRef);
-      }
-      let imageUrl3 = '';
-      if (file3) {
-        const imageRef = dbsRef(storage, `images/${uuidv4()}-${file3.originalname}`);
-        const metadata = {
-          contentType: file3.mimetype,
-          customMetadata: {
-            description: 'This is a products image',
-          },
-          contentDisposition: 'inline; filename="' + file3.originalname + '"',
-          cacheControl: 'public, max-age=31536000',
-        };
-        await uploadBytes(imageRef, file3.buffer, metadata);
-        imageUrl3 = await getDownloadURL(imageRef);
-      }
+        return await getDownloadURL(imageRef);
+      };
+
+      // Update gambar
+      const newImageUrl = (await uploadImage(file)) || currentImages[0];
+      const newImageUrl2 = (await uploadImage(file2)) || currentImages[1];
+      const newImageUrl3 = (await uploadImage(file3)) || currentImages[2];
+
+      // Hapus file lama jika ada
+      const deleteOldImage = async (imageUrl) => {
+        if (imageUrl) {
+          const oldImageRef = dbsRef(storage, imageUrl); // Pastikan ini adalah referensi yang benar
+          await deleteObject(oldImageRef);
+        }
+      };
+
+      // Hapus gambar yang diganti
+      if (file) await deleteOldImage(currentImages[0]);
+      if (file2) await deleteOldImage(currentImages[1]);
+      if (file3) await deleteOldImage(currentImages[2]);
+
       // Update produk ke Realtime Database
-      await update(ref(db, `products/${id}`), {
+      await update(productRef, {
         name,
         price,
         subPrice,
         category,
         color: getValidColors([color1, color2, color3]),
-        imageUrl: getValidColors([imageUrl, imageUrl2, imageUrl3]),
+        imageUrl: [newImageUrl, newImageUrl2, newImageUrl3],
         discount: Math.round(((price - subPrice) / price) * 100),
         rating,
         terjual,

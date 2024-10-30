@@ -175,7 +175,6 @@ router.post('/share-banerwa', async (req, res) => {
   try {
     const recipientPhoneNumber = '+6283166383802';
     const colors = [req.body.color1, req.body.color2, req.body.color3];
-    console.log('cek kolor', colors);
     const colorsValue = getValidColors(colors);
 
     const caption = `
