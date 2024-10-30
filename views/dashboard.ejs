@@ -48,7 +48,7 @@
         </thead>
         <% let counter = 1; %>
         <tbody>
-          <% products.forEach(function(item){ %>
+          <% products.reverse().forEach(function(item){ %>
           <tr>
             <td><%= counter %></td>
             <td><img src="<%= item.imageUrl %>" style="width: 30px; height: 30px" alt="" /></td>
@@ -106,7 +106,11 @@
         </thead>
         <% let count = 1; %>
         <tbody>
-          <% baners.forEach(function(data){ %>
+          <% if (baners.length === 0) { %>
+          <tr>
+            <td colspan="9" class="text-center">Tidak ada data baner yang tersedia.</td>
+          </tr>
+          <% } else { %> <% baners.reverse().forEach(function(data){ %>
           <tr>
             <td><%= count %></td>
             <td><%= data.banerDetaileUrl %></td>
@@ -138,7 +142,7 @@
               </div>
             </td>
           </tr>
-          <% count++; %> <%}); %>
+          <% count++; %> <% }); %> <% } %>
         </tbody>
       </table>
     </div>

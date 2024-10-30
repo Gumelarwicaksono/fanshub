@@ -64,7 +64,7 @@
           </div>
           <div class="carousel-inner rounded-custom">
             <div id="banersprod" data-baner="<%= JSON.stringify(baners) %>"></div>
-            <% baners.forEach((item, index) => { %>
+            <% baners.reverse().forEach((item, index) => { %>
             <div class="carousel-item <%= index === 0 ? 'active' : '' %>" id="carousel-item-<%= index %>">
               <div class="slide-content">
                 <div>
@@ -127,10 +127,10 @@
           <div class="row" id="product-list">
             <% if (products.length === 0) { %>
             <p>No categories available</p>
-            <% } else { %> <% products.forEach((product) => { %>
+            <% } else { %> <% products.reverse().forEach((product) => { %>
             <div onclick="toDtl('/products/detail/<%=product.id %>')" class="col-6 col-md-3 col-lg-2 m-0 p-0 point">
               <div class="card m-1 h-min">
-                <img src="<%= product.imageUrl %>" alt="<%= product.name %>" class="card-img-top" />
+                <img src="<%= product.imageUrl[0] %>" alt="<%= product.name %>" class="card-img-top" />
                 <div class="card-body m-0">
                   <h5 class="card-title fs-6 m-0"><%= product.name %></h5>
                   <div class="card-text m-0">
@@ -150,7 +150,7 @@
                     <!-- <a href="" class="btn btn-sm btn-success m-0 ps-3 pe-3">Buy Now</a> -->
                     <form action="/share-whatsapp" method="post">
                       <input type="hidden" name="id" value="<%= product.id %>" />
-                      <input type="hidden" name="imageUrl" value="<%= product.imageUrl %>" />
+                      <input type="hidden" name="imageUrl" value="<%= product.imageUrl[0] %>" />
                       <input type="hidden" name="name" value="<%= product.name %>" />
                       <input type="hidden" name="price" value="<%= product.price %>" />
                       <input type="hidden" name="subPrice" value="<%=   product.subPrice %>" />
@@ -211,96 +211,67 @@
         categoryName = val;
         let content = document.getElementById('product-list');
         const buttons = document.querySelectorAll('.btn');
+
+        // Menghapus kelas 'active-btn' dari semua tombol
         buttons.forEach((button) => {
           button.classList.remove('active-btn');
         });
+
+        // Menambahkan kelas 'active-btn' pada tombol yang aktif
         const activeButton = document.querySelector(`button[onclick="filterProductsByCategory('${categoryName}')"]`);
         activeButton.classList.add('active-btn');
+
+        // Mengosongkan konten sebelumnya
         content.innerHTML = '';
 
-        products.forEach((product) => {
-          if (categoryName === '' || categoryName === 'All') {
-            content.innerHTML += `
-            <div onclick="toDtl('/products/detail/${product.id}')" class="col-6 col-md-3 col-lg-2 m-0 p-0 point">
-              <div class="card m-1 h-min">
-                <img src="${product.imageUrl}" alt="${product.name}" class="card-img-top" />
+        // Memfilter produk berdasarkan kategori
+        let filteredProducts = products.filter((product) => {
+          return categoryName === '' || categoryName === 'All' || product.category.toLowerCase() === categoryName.toLowerCase();
+        });
+
+        // Membalik urutan produk agar produk terbaru ditampilkan di atas
+        filteredProducts.reverse();
+
+        // Menampilkan produk yang telah difilter dan dibalik
+        filteredProducts.forEach((product) => {
+          content.innerHTML += `
+        <div onclick="toDtl('/products/detail/${product.id}')" class="col-6 col-md-3 col-lg-2 m-0 p-0 point">
+            <div class="card m-1 h-min">
+                <img src="${product.imageUrl[0]}" alt="${product.name}" class="card-img-top" />
                 <div class="card-body m-0">
-                  <h5 class="card-title fs-6 m-0">${product.name}</h5>
-                  <div class="card-text m-0">
-                    <div class="d-flex justify-content-between m-0 p-0">
-                      <div class="m-0">
-                        <del class="m-0">Rp${formatAngka(product.price)}</del>
-                        <div class="text-success m-0 fw-bold">Rp${formatAngka(product.subPrice)}</div>
-                      </div>
-                      <div class="m-0">
-                        <div class="bg-danger text-white divs-1 pe-1">${product.discount}% Off</div>
-                        <div><i class="bi bi-star-fill text-warning"></i>${product.rating}</div>
-                      </div>
+                    <h5 class="card-title fs-6 m-0">${product.name}</h5>
+                    <div class="card-text m-0">
+                        <div class="d-flex justify-content-between m-0 p-0">
+                            <div class="m-0">
+                                <del class="m-0">Rp${formatAngka(product.price)}</del>
+                                <div class="text-success m-0 fw-bold">Rp${formatAngka(product.subPrice)}</div>
+                            </div>
+                            <div class="m-0">
+                                <div class="bg-danger text-white divs-1 pe-1">${product.discount}% Off</div>
+                                <div><i class="bi bi-star-fill text-warning"></i>${product.rating}</div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <p class="card-text text-secondary fs-6 m-0"><i class="bi bi-geo-alt"></i> ${product.gudang}</p>
-                  <div class="">
-                   <form action="/share-whatsapp" method="post">
-                      <input type="hidden" name="id" value="${product.id}" />
-                      <input type="hidden" name="imageUrl" value="${product.imageUrl}" />
-                      <input type="hidden" name="name" value="${product.name}" />
-                      <input type="hidden" name="price" value="${product.price}" />
-                      <input type="hidden" name="subPrice" value="${product.subPrice}" />
-                      <input type="hidden" name="discount" value="${product.discount}" />
-                      <input type="hidden" name="color1" value="${product.color && product.color.length > 0 ? product.color[0] : ''}" />
-                      <input type="hidden" name="color2" value="${product.color && product.color.length > 0 ? product.color[1] : ''}" />
-                      <input type="hidden" name="color3" value="${product.color && product.color.length > 0 ? product.color[2] : ''}" />
-                      <button type="submit" class="btn btn-sm btn-success m-0 ps-3 pe-3">
-                      Buy Now  <i class="bi bi-whatsapp"></i>
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-          `;
-          }
-          if (product.category.toLowerCase() === categoryName.toLowerCase()) {
-            content.innerHTML += `
-            <div onclick="toDtl('/products/detail/${product.id}')" class="col-6 col-md-3 col-lg-2 m-0 p-0 point">
-              <div class="card m-1 h-min">
-                <img src="${product.imageUrl}" alt="${product.name}" class="card-img-top" />
-                <div class="card-body m-0">
-                  <h5 class="card-title fs-6 m-0">${product.name}</h5>
-                  <div class="card-text m-0">
-                    <div class="d-flex justify-content-between m-0 p-0">
-                      <div class="m-0">
-                        <del class="m-0">Rp${formatAngka(product.price)}</del>
-                        <div class="text-success m-0 fw-bold">Rp${formatAngka(product.subPrice)}</div>
-                      </div>
-                      <div class="m-0">
-                        <div class="bg-danger text-white divs-1 pe-1">${product.discount}% Off</div>
-                        <div><i class="bi bi-star-fill text-warning"></i>${product.rating}</div>
-                      </div>
+                    <p class="card-text text-secondary fs-6 m-0"><i class="bi bi-geo-alt"></i> ${product.gudang}</p>
+                    <div class="">
+                        <form action="/share-whatsapp" method="post">
+                            <input type="hidden" name="id" value="${product.id}" />
+                            <input type="hidden" name="imageUrl" value="${product.imageUrl[0]}" />
+                            <input type="hidden" name="name" value="${product.name}" />
+                            <input type="hidden" name="price" value="${product.price}" />
+                            <input type="hidden" name="subPrice" value="${product.subPrice}" />
+                            <input type="hidden" name="discount" value="${product.discount}" />
+                            <input type="hidden" name="color1" value="${product.color && product.color.length > 0 ? product.color[0] : ''}" />
+                            <input type="hidden" name="color2" value="${product.color && product.color.length > 0 ? product.color[1] : ''}" />
+                            <input type="hidden" name="color3" value="${product.color && product.color.length > 0 ? product.color[2] : ''}" />
+                            <button type="submit" class="btn btn-sm btn-success m-0 ps-3 pe-3">
+                                Buy Now <i class="bi bi-whatsapp"></i>
+                            </button>
+                        </form>
                     </div>
-                  </div>
-                  <p class="card-text text-secondary fs-6 m-0"><i class="bi bi-geo-alt"></i> ${product.gudang}</p>
-                  <div class="">
-                    <form action="/share-whatsapp" method="post">
-                      <input type="hidden" name="id" value="${product.id}" />
-                      <input type="hidden" name="imageUrl" value="${product.imageUrl}" />
-                      <input type="hidden" name="name" value="${product.name}" />
-                      <input type="hidden" name="price" value="${product.price}" />
-                      <input type="hidden" name="subPrice" value="${product.subPrice}" />
-                      <input type="hidden" name="discount" value="${product.discount}" />
-                      <input type="hidden" name="color1" value="${product.color && product.color.length > 0 ? product.color[0] : ''}" />
-                      <input type="hidden" name="color2" value="${product.color && product.color.length > 0 ? product.color[1] : ''}" />
-                      <input type="hidden" name="color3" value="${product.color && product.color.length > 0 ? product.color[2] : ''}" />
-                      <button type="submit" class="btn btn-sm btn-success m-0 ps-3 pe-3">
-                       Buy Now <i class="bi bi-whatsapp"></i>
-                      </button>
-                    </form>
-                  </div>
                 </div>
-              </div>
             </div>
-          `;
-          }
+        </div>`;
         });
       }
     </script>

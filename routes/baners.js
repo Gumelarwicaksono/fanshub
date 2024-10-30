@@ -35,6 +35,7 @@ router.post('/baners', authorize, upload.fields([{ name: 'banerImg2', maxCount: 
     const colors = [color1, color2, color3];
     const colorsValue = getValidColors(colors);
     // Simpan produk ke Realtime Database
+
     const newProductRef = push(ref(db, 'baners'));
     await set(newProductRef, {
       banerName,

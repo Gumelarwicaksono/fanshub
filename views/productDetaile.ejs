@@ -18,9 +18,19 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <link href="https://cdn.jsdelivr.net/npm/swiffy-slider@1.6.0/dist/css/swiffy-slider.min.css" rel="stylesheet" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="icon" type="image/png" sizes="128x128 " href="./images/logo1.png" />
     <style>
+      * {
+        /* font-family: 'Fira Sans', sans-serif; */
+        font-weight: 500;
+      }
+      .rounded-cs-50 {
+        width: 10px !important;
+        height: 10px !important;
+        border-radius: 50% !important;
+      }
       #contentList {
         display: none;
       }
@@ -58,7 +68,24 @@
               <div class="row" id="product-list">
                 <div class="col m-0 p-0">
                   <div class="card m-3 border-1 border-dark shadow">
-                    <img src="<%= product.imageUrl %>" alt="<%= product.name %>" class="card-img-top" />
+                    <div class="swiffy-slider">
+                      <ul class="slider-container">
+                        <% product.imageUrl.forEach(function(url) { %>
+                        <li>
+                          <img src="<%= url %>" style="max-width: 100%; height: auto" />
+                        </li>
+                        <% }); %>
+                      </ul>
+
+                      <button type="button bg-success" class="slider-nav"></button>
+                      <button type="button bg-success" class="slider-nav slider-nav-next"></button>
+
+                      <div class="slider-indicators">
+                        <% product.imageUrl.forEach(function(url, index) { %>
+                        <button class="<%= index === 0 ? 'active' : '' %> rounded-cs-50 bg-warning" data-slide-to="<%= index %>"></button>
+                        <% }); %>
+                      </div>
+                    </div>
                     <div class="card-body m-0">
                       <h5 class="card-title fs-6 m-0"><%= product.name %></h5>
                       <div class="card-text m-0">
@@ -141,6 +168,7 @@
       </div>
     </div>
     <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/swiffy-slider@1.6.0/dist/js/swiffy-slider.min.js" crossorigin="anonymous" defer></script>
     <script>
       const currentYearElement = document.getElementById('current-year');
       const currentYear = new Date().getFullYear();
