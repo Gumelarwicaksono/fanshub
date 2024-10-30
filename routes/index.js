@@ -29,11 +29,6 @@ const upload = multer({ storage: multer.memoryStorage() });
 //   return filename.replace(/[^a-z0-9\.\-_ ]/gi, '_');
 // }
 /* GET home page. */
-// router.get('/', function (req, res, next) {
-//   res.render('index', { title: 'Express' });
-// });
-
-//API GET PRODUCT HALAMAN HOME
 router.get('/', async (req, res) => {
   const productsDbRef = ref(db, 'products');
   const categoriesDbRef = ref(db, 'categories');
@@ -220,123 +215,6 @@ router.post(
   }
 );
 
-// router.post(
-//   '/products',
-//   upload.fields([
-//     { name: 'image', maxCount: 1 },
-//     { name: 'image2', maxCount: 1 },
-//     { name: 'image3', maxCount: 1 },
-//   ]),
-//   async function (req, res) {
-//     try {
-//       const { name, price, subPrice, category, color1, color2, color3, rating, terjual, gudang } = req.body;
-
-//       // Mengambil file gambar
-//       const file = req.files.image ? req.files.image[0] : null;
-//       const file2 = req.files.image2 ? req.files.image2[0] : null;
-//       const file3 = req.files.image3 ? req.files.image3[0] : null;
-
-//       // Validasi file gambar (misalnya, pastikan file tidak null)
-//       if (!file) {
-//         return res.status(400).json({ message: 'All images are required.' });
-//       }
-
-//       let imageUrl = '';
-
-//       if (file) {
-//         const imageRef = dbsRef(storage, `images/${uuidv4()}-${file.originalname}`);
-//         const metadata = {
-//           contentType: file.mimetype,
-//           customMetadata: {
-//             description: 'This is a products image',
-//           },
-//           contentDisposition: 'inline; filename="' + file.originalname + '"',
-//           cacheControl: 'public, max-age=31536000',
-//         };
-//         await uploadBytes(imageRef, file.buffer, metadata);
-//         imageUrl = await getDownloadURL(imageRef);
-//       }
-//       let imageUrl2 = '';
-//       if (file2) {
-//         const imageRef = dbsRef(storage, `images/${uuidv4()}-${file2.originalname}`);
-//         const metadata = {
-//           contentType: file2.mimetype,
-//           customMetadata: {
-//             description: 'This is a products image',
-//           },
-//           contentDisposition: 'inline; filename="' + file2.originalname + '"',
-//           cacheControl: 'public, max-age=31536000',
-//         };
-//         await uploadBytes(imageRef, file2.buffer, metadata);
-//         imageUrl2 = await getDownloadURL(imageRef);
-//       }
-//       let imageUrl3 = '';
-//       if (file3) {
-//         const imageRef = dbsRef(storage, `images/${uuidv4()}-${file3.originalname}`);
-//         const metadata = {
-//           contentType: file3.mimetype,
-//           customMetadata: {
-//             description: 'This is a products image',
-//           },
-//           contentDisposition: 'inline; filename="' + file3.originalname + '"',
-//           cacheControl: 'public, max-age=31536000',
-//         };
-//         await uploadBytes(imageRef, file3.buffer, metadata);
-//         imageUrl3 = await getDownloadURL(imageRef);
-//       }
-
-//       // Simpan produk ke Realtime Database
-//       const newProductRef = push(ref(db, 'products'));
-//       await set(newProductRef, {
-//         name,
-//         price,
-//         subPrice,
-//         category: category.toLowerCase(),
-//         color: getValidColors([color1, color2, color3]),
-//         imageUrl: getValidColors([imageUrl, imageUrl2, imageUrl3]),
-//         discount: Math.round(((price - subPrice) / price) * 100),
-//         rating,
-//         terjual,
-//         gudang,
-//       });
-//       res.status(201).json('success add product sablonika ');
-//     } catch (error) {
-//       console.error(error);
-//       res.status(500).send('Terjadi kesalahan.');
-//     }
-//   }
-// );
-
-// router.get('/dashboard', authorize, async (req, res) => {
-//   const productsDbRef = ref(db, 'products');
-//   const categoriesDbRef = ref(db, 'categories');
-//   const banersDbRef = ref(db, 'baners');
-
-//   const productsSnapshot = await get(productsDbRef);
-//   const categoriesSnapshot = await get(categoriesDbRef);
-//   const banersSnapshot = await get(banersDbRef);
-
-//   if (productsSnapshot.exists() && categoriesSnapshot.exists()) {
-//     const products = Object.keys(productsSnapshot.val()).map((key) => {
-//       return { id: key, ...productsSnapshot.val()[key] };
-//     });
-
-//     const categories = Object.keys(categoriesSnapshot.val()).map((key) => {
-//       return { id: key, ...categoriesSnapshot.val()[key] };
-//     });
-//     const baners = Object.keys(banersSnapshot.val()).map((key) => {
-//       return { id: key, ...banersSnapshot.val()[key] };
-//     });
-//     res.render('dashboard', {
-//       products: products,
-//       categories: categories,
-//       baners: baners,
-//     });
-//   } else {
-//     res.status(404).json({ message: 'No products or categories found' });
-//   }
-// });
-
 router.get('/dashboard', authorize, async (req, res) => {
   const productsDbRef = ref(db, 'products');
   const categoriesDbRef = ref(db, 'categories');
@@ -378,108 +256,6 @@ router.get('/addproducts', authorize, (req, res) => {
 });
 
 //API EDIT PRODUCT
-// router.post(
-//   '/products/e/:id',
-//   upload.fields([
-//     { name: 'image', maxCount: 1 },
-//     { name: 'image2', maxCount: 1 },
-//     { name: 'image3', maxCount: 1 },
-//   ]),
-//   async function (req, res) {
-//     try {
-//       const { id } = req.params;
-//       const { name, price, subPrice, category, color1, color2, color3, rating, terjual, gudang } = req.body;
-
-//       const file = req.files.image ? req.files.image[0] : null;
-//       const file2 = req.files.image2 ? req.files.image2[0] : null;
-//       const file3 = req.files.image3 ? req.files.image3[0] : null;
-
-//       // Cek produk jika belum ada (menggunakan Realtime Database)
-//       const productRef = ref(db, `products/${id}`);
-//       const productSnapshot = await get(productRef);
-//       if (!productSnapshot.exists()) {
-//         return res.status(404).send('Produk tidak ditemukan.');
-//       }
-
-//       // Cek dan update kategori jika belum ada (menggunakan Realtime Database)
-//       const categoryRef = ref(db, 'categories');
-//       const categorySnapshot = await get(categoryRef);
-
-//       const categoryName = category.toLowerCase(); // replace with the actual category name
-
-//       const categories = Object.values(categorySnapshot.val()); // convert object to array
-//       const existingCategory = categories.find((category) => category.name.toLowerCase() === categoryName);
-
-//       if (!existingCategory) {
-//         await push(categoryRef, { name: categoryName });
-//       }
-
-//       // Upload gambar ke Firebase Storage (jika ada)
-
-//       let imageUrl = '';
-
-//       if (file) {
-//         const imageRef = dbsRef(storage, `images/${uuidv4()}-${file.originalname}`);
-//         const metadata = {
-//           contentType: file.mimetype,
-//           customMetadata: {
-//             description: 'This is a products image',
-//           },
-//           contentDisposition: 'inline; filename="' + file.originalname + '"',
-//           cacheControl: 'public, max-age=31536000',
-//         };
-//         await uploadBytes(imageRef, file.buffer, metadata);
-//         imageUrl = await getDownloadURL(imageRef);
-//       }
-//       let imageUrl2 = '';
-//       if (file2) {
-//         const imageRef = dbsRef(storage, `images/${uuidv4()}-${file2.originalname}`);
-//         const metadata = {
-//           contentType: file2.mimetype,
-//           customMetadata: {
-//             description: 'This is a products image',
-//           },
-//           contentDisposition: 'inline; filename="' + file2.originalname + '"',
-//           cacheControl: 'public, max-age=31536000',
-//         };
-//         await uploadBytes(imageRef, file2.buffer, metadata);
-//         imageUrl2 = await getDownloadURL(imageRef);
-//       }
-//       let imageUrl3 = '';
-//       if (file3) {
-//         const imageRef = dbsRef(storage, `images/${uuidv4()}-${file3.originalname}`);
-//         const metadata = {
-//           contentType: file3.mimetype,
-//           customMetadata: {
-//             description: 'This is a products image',
-//           },
-//           contentDisposition: 'inline; filename="' + file3.originalname + '"',
-//           cacheControl: 'public, max-age=31536000',
-//         };
-//         await uploadBytes(imageRef, file3.buffer, metadata);
-//         imageUrl3 = await getDownloadURL(imageRef);
-//       }
-//       // Update produk ke Realtime Database
-//       await update(ref(db, `products/${id}`), {
-//         name,
-//         price,
-//         subPrice,
-//         category,
-//         color: getValidColors([color1, color2, color3]),
-//         imageUrl: getValidColors([imageUrl, imageUrl2, imageUrl3]),
-//         discount: Math.round(((price - subPrice) / price) * 100),
-//         rating,
-//         terjual,
-//         gudang,
-//       });
-
-//       res.status(200).json('success update product sablonika ');
-//     } catch (error) {
-//       console.error(error);
-//       res.status(500).send('Terjadi kesalahan.');
-//     }
-//   }
-// );
 
 router.post(
   '/products/e/:id',
@@ -617,87 +393,6 @@ router.get('/products/detail/:id', async function (req, res) {
   }
 });
 
-// DELETE
-
-// router.delete('/products/:id/delete', authorize, async function (req, res) {
-//   try {
-//     const id = req.params.id;
-//     const productRef = ref(db, `products/${id}`);
-//     const categoryRef = ref(db, 'category');
-
-//     // Retrieve the product data from the Realtime Database
-//     const productSnapshot = await get(productRef);
-//     if (!productSnapshot.exists()) {
-//       return res.status(404).send('Product not found');
-//     }
-//     const productData = productSnapshot.val();
-//     // Delete image from Storage
-//     if (productData.imageUrl) {
-//       const oldImageRef = dbsRef(storage, productData.imageUrl);
-//       await deleteObject(oldImageRef);
-//     }
-
-//     // Delete product data from Realtime Database
-//     await remove(productRef);
-
-//     res.status(200).json({
-//       message: 'Produk berhasil dihapus',
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send('Terjadi kesalahan.');
-//   }
-// });
-// router.delete('/products/:id/delete', authorize, async (req, res) => {
-//   try {
-//     const id = req.params.id;
-//     const productRef = ref(db, `products/${id}`);
-//     const categoryRef = ref(db, 'categories');
-
-//     // Retrieve the product data from the Realtime Database
-//     const productSnapshot = await get(productRef);
-//     if (!productSnapshot.exists()) {
-//       return res.status(404).send('Product not found');
-//     }
-//     const productData = productSnapshot.val();
-//     // Delete image from Storage
-//     if (productData.imageUrl) {
-//       const oldImageRef = dbsRef(storage, productData.imageUrl);
-//       await deleteObject(oldImageRef);
-//     }
-
-//     // Delete product data from Realtime Database
-//     await remove(productRef);
-
-//     // Check if any category is not used by any product
-//     const categoriesSnapshot = await get(categoryRef);
-//     const categoriesData = categoriesSnapshot.val();
-//     const productsSnapshot = await get(ref(db, 'products'));
-//     const productsData = productsSnapshot.val();
-
-//     Object.keys(categoriesData).forEach((categoryId) => {
-//       let categoryName = categoriesData[categoryId].name;
-//       let categoryUsed = false;
-//       Object.keys(productsData).forEach((productId) => {
-//         if (productsData[productId].category === categoryName) {
-//           categoryUsed = true;
-//         }
-//       });
-//       if (!categoryUsed) {
-//         // Delete the unused category
-//         remove(ref(db, `category/${categoryId}`));
-//       }
-//     });
-
-//     res.status(200).json({
-//       message: 'Produk berhasil dihapus',
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send('Terjadi kesalahan.');
-//   }
-// });
-
 router.delete('/products/:id/delete', authorize, async (req, res) => {
   try {
     const id = req.params.id;
@@ -753,51 +448,6 @@ function formatAngka(angka) {
   return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
-// router.post('/share-whatsapp', async (req, res) => {
-//   const { imageUrl, name, price, subPrice, discount, detailUrl } = req.body;
-//   const recipientPhoneNumber = '+6283166383802';
-//   const hemat = price - subPrice;
-
-//   try {
-//     // Mengunduh gambar dari Firebase Storage
-//     let media;
-
-//     // Jika imageUrl adalah gambar:
-//     if (imageUrl.match(/\.(jpeg|jpg|png|gif)$/i)) {
-//       // Validasi ekstensi gambar
-//       const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
-//       const imageBuffer = Buffer.from(response.data, 'binary');
-//       media = new MessageMedia('image/jpeg', imageBuffer, 'image.jpg'); // Ganti mimetype jika perlu
-//     } else {
-//       // Jika imageUrl adalah video/GIF, coba kirim sebagai URL (pastikan formatnya didukung):
-//       media = await MessageMedia.fromUrl(imageUrl);
-//     }
-//     // Mengirim gambar ke WhatsApp dengan caption
-//     const caption = `
-// 🔥 PROMO TERBATAS! ${name} 🔥
-
-// ✨ ${name} ✨
-
-// Harga Normal: Rp${formatAngka(price)}
-// Diskon: ${discount}%
-// Harga Spesial kaos ${name} setelah diskon: *Rp${formatAngka(subPrice)}*
-// Anda Hemat: *Rp${formatAngka(hemat)}*
-
-// Tampil stylish dan percaya diri dengan produk terbaru kami! Bahan katun premium yang nyaman dan desain grafiti yang edgy bikin kamu jadi pusat perhatian.
-// Stok Terbatas! Pesan Sekarang Sebelum Kehabisan!
-
-// ➡️ Klik di sini untuk cek ongkir dan pesan dari website: ${detailUrl}`;
-
-//     await client.sendMessage(recipientPhoneNumber, media, { caption: caption });
-
-//     // Redirect ke WhatsApp
-//     res.redirect(`https://wa.me/${recipientPhoneNumber}?text=➡️ Silahkan Tanya Harga Dengan ONGKIR khusus jakarta barat free ongkir`);
-//   } catch (error) {
-//     console.error('Error downloading or sending image:', error);
-//     res.status(500).send('Error processing request');
-//   }
-// });
-
 router.post('/share-whatsapp', async (req, res) => {
   try {
     const imageUrl = req.body.imageUrl; // Ambil imageUrl dari body request
@@ -815,9 +465,7 @@ router.post('/share-whatsapp', async (req, res) => {
     const colorsValue = getValidColors(colors);
 
     const caption = `
-🔥 KHUSUS BUAT KAMU!🔥
-
-✨ *${req.body.name}* ✨
+*${req.body.name}*
 
 Harga :*Rp*.*${formatAngka(req.body.price)}*
 Diskon : *${req.body.discount}%*
@@ -829,24 +477,19 @@ setelah diskon: *Rp${formatAngka(req.body.subPrice)}*
  ${colorsValue.map((color) => `- ${color}`).join('\n')}
 
 *SILAHKAN ISI FORM DIBAWAH INI UNTUK MELAKUKAN PEMESANAN ! :*
- id : ${req.body.id}
- Nama pemesan :
- Ukuran baju:
- Warna baju:
- Alamat lengkap :
- No HP / wa  :
+ - id : ${req.body.id}
+ - Nama pemesan :
+ - Ukuran baju:
+ - Warna baju:
+ - Alamat lengkap :
+ - No HP / wa  :
  
- ➡️product : https://fanshub.gumelar.site/products/detail/${req.body.id}
- ➡️halaman web katalog : https://fanshub.gumelar.site 
- ➡️imageUrl : ${imageUrl}
+ - product : https://fanshub.gumelar.site/products/detail/${req.body.id}
+ - halaman web katalog : https://fanshub.gumelar.site 
+ - imageUrl : ${imageUrl}
 
     `;
-
-    // Hapus gambar di direktori wafoto
-    // fs.unlinkSync(filePath);
-    // console.log('Gambar berhasil dihapus dari direktori wafoto');
-
-    // Redirect ke WhatsApp
+    res.set('Content-Type', 'text/html; charset=utf-8');
     res.redirect(`https://wa.me/${recipientPhoneNumber}?text=${encodeURIComponent(`${caption}`)}`);
   } catch (error) {
     console.error('Error menyimpan gambar atau mengirim ke WhatsApp:', error);

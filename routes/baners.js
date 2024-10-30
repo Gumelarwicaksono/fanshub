@@ -178,9 +178,7 @@ router.post('/share-banerwa', async (req, res) => {
     const colorsValue = getValidColors(colors);
 
     const caption = `
-🔥 KHUSUS BUAT KAMU!🔥
-
-✨ ${req.body.banerName} ✨
+${req.body.banerName}
 
 Harga Normal: *Rp*.*${formatAngka(req.body.banerPrice)}*
 Diskon: *${req.body.banerDiscount}%*
@@ -194,15 +192,15 @@ ${colorsValue.map((color) => `- ${color}`).join('\n')}
 *SILAHKAN ISI FORM DIBAWAH INI UNTUK MELAKUKAN PEMESANAN ! :*
 
  id : ${req.body.id}
- Nama pemesan :
- Ukuran baju:
- Warna baju:
- Alamat lengkap :
- No HP / wa  :
+ - Nama pemesan :
+ - Ukuran baju:
+ - Warna baju:
+ - Alamat lengkap :
+ - No HP / wa  :
  
  
- ➡️halaman web katalog : https://fanshub.gumelar.site
- ➡️imageUrl : ${req.body.banerImgUrl}
+ - halaman web katalog : https://fanshub.gumelar.site
+ - imageUrl : ${req.body.banerImgUrl}
 
     `;
 
